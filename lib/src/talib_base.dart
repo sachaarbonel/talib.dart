@@ -1,7 +1,5 @@
 library talib;
 
-// import 'errors.dart' as errors;
-// import 'math.dart' as math;
 import 'dart:math' as math;
 import 'dart:core';
 
