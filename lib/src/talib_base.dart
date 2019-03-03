@@ -3,6 +3,15 @@ library talib;
 import 'dart:math' as math;
 import 'dart:core';
 
+
+T exceptionAware<T>(T Function() f) {
+   try { 
+     return f(); 
+   } catch(_) { 
+     return null; 
+    }
+   }
+
 enum MaType {
   SMA,
   EMA,
@@ -1994,8 +2003,8 @@ List Macd(List inReal, int inFastPeriod, int inSlowPeriod, int inSignalPeriod) {
   lookbackTotal += (inSlowPeriod - 1);
   var fastEMABuffer = ema(inReal, inFastPeriod, k2);
   var slowEMABuffer = ema(inReal, inSlowPeriod, k1);
-  for (var i = 0; i < fastEMABuffer.length; i++) {
-    fastEMABuffer[i] = fastEMABuffer.elementAt(i) - slowEMABuffer.elementAt(i);
+  for (var i = 0; i < fastEMABuffer.length; i++) { 
+    fastEMABuffer[i] = exceptionAware<dynamic>(() => fastEMABuffer.elementAt(i) - slowEMABuffer.elementAt(i));
   }
   var outMACD = new List(inReal.length);
   for (var i = lookbackTotal - 1; i < fastEMABuffer.length; i++) {
