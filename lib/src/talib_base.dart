@@ -108,19 +108,19 @@ List ema(List inReal, int inTimePeriod, double k1) {
   var i = inTimePeriod;
   var tempReal = 0.0;
   for (; i > 0;) {
-    tempReal += inReal.elementAt(today);
+    tempReal += inReal?.elementAt(today) ?? 0.0;
     today++;
     i--;
   }
   var prevMA = tempReal / inTimePeriod;
   for (; today <= startIdx;) {
-    prevMA = ((inReal.elementAt(today) - prevMA) * k1) + prevMA;
+    prevMA = (((inReal?.elementAt(today) ?? 0.0) - prevMA) * k1) + prevMA;
     today++;
   }
   outReal[startIdx] = prevMA;
   var outIdx = startIdx + 1;
   for (; today < inReal.length;) {
-    prevMA = ((inReal.elementAt(today) - prevMA) * k1) + prevMA;
+    prevMA = (((inReal?.elementAt(today) ?? 0.0) - prevMA) * k1) + prevMA;
     outReal[outIdx] = prevMA;
     today++;
     outIdx++;
@@ -1987,13 +1987,13 @@ List Macd(List inReal, int inFastPeriod, int inSlowPeriod, int inSignalPeriod) {
   var k1 = 0.0;
   var k2 = 0.0;
   if (inSlowPeriod != 0) {
-    k1 = 2.0 / inSlowPeriod + 1;
+    k1 = 2.0 / (inSlowPeriod + 1).toDouble();
   } else {
     inSlowPeriod = 26;
     k1 = 0.075;
   }
   if (inFastPeriod != 0) {
-    k2 = 2.0 / inFastPeriod + 1;
+    k2 = 2.0 / (inFastPeriod + 1).toDouble();
   } else {
     inFastPeriod = 12;
     k2 = 0.15;
@@ -2004,16 +2004,21 @@ List Macd(List inReal, int inFastPeriod, int inSlowPeriod, int inSignalPeriod) {
   var fastEMABuffer = ema(inReal, inFastPeriod, k2);
   var slowEMABuffer = ema(inReal, inSlowPeriod, k1);
   for (var i = 0; i < fastEMABuffer.length; i++) { 
-    fastEMABuffer[i] = exceptionAware<dynamic>(() => fastEMABuffer.elementAt(i) - slowEMABuffer.elementAt(i));
-  }
+    var fastEMABufferElt = fastEMABuffer?.elementAt(i) ?? 0.0;
+    var slowEMABufferElt = slowEMABuffer?.elementAt(i) ?? 0.0;
+    //fastEMABuffer[i] = exceptionAware<dynamic>(() => fastEMABuffer.elementAt(i) - slowEMABuffer.elementAt(i));
+    fastEMABuffer[i] = fastEMABufferElt - slowEMABufferElt;
+ }
   var outMACD = new List(inReal.length);
   for (var i = lookbackTotal - 1; i < fastEMABuffer.length; i++) {
     outMACD[i] = fastEMABuffer.elementAt(i);
   }
-  var outMACDSignal = ema(outMACD, inSignalPeriod, (2.0 / inSignalPeriod + 1));
+  var outMACDSignal = ema(outMACD, inSignalPeriod, (2.0 /( inSignalPeriod + 1).toDouble()));
   var outMACDHist = new List(inReal.length);
   for (var i = lookbackTotal; i < outMACDHist.length; i++) {
-    outMACDHist[i] = outMACD.elementAt(i) - outMACDSignal.elementAt(i);
+    var outMacdElt = outMACD?.elementAt(i) ?? 0.0;
+    var outMACDSignalElt = outMACDSignal?.elementAt(i) ?? 0.0;
+    outMACDHist[i] = outMacdElt - outMACDSignalElt;
   }
   return [outMACD, outMACDSignal, outMACDHist];
 }
