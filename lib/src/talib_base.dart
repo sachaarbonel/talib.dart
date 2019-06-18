@@ -1,16 +1,15 @@
 library talib;
 
-import 'dart:math' as math;
 import 'dart:core';
-
+import 'dart:math' as math;
 
 T exceptionAware<T>(T Function() f) {
-   try { 
-     return f(); 
-   } catch(_) { 
-     return null; 
-    }
-   }
+  try {
+    return f();
+  } catch (_) {
+    return null;
+  }
+}
 
 enum MaType {
   SMA,
@@ -24,7 +23,7 @@ enum MaType {
   T3MA,
 }
 
-class moneyFlow {
+class MoneyFlow {
   double positive;
   double negative;
 
@@ -36,44 +35,44 @@ class moneyFlow {
 
 List BBands(List inReal, int inTimePeriod, double inNbDevUp, double inNbDevDn,
     MaType inMAType) {
-  var outRealUpperBand = new List(inReal.length);
-  var outRealMiddleBand = Ma(inReal, inTimePeriod, inMAType);
-  var outRealLowerBand = new List(inReal.length);
-  var tempBuffer2 = StdDev(inReal, inTimePeriod, 1.0);
+  final outRealUpperBand = List(inReal.length);
+  final outRealMiddleBand = Ma(inReal, inTimePeriod, inMAType);
+  final outRealLowerBand = List(inReal.length);
+  final tempBuffer2 = StdDev(inReal, inTimePeriod, 1.0);
   if (inNbDevUp == inNbDevDn) {
     if (inNbDevUp == 1.0) {
       for (var i = 0; i < inReal.length; i++) {
-        var tempReal = tempBuffer2.elementAt(i);
-        var tempReal2 = outRealMiddleBand.elementAt(i);
+        final tempReal = tempBuffer2.elementAt(i);
+        final tempReal2 = outRealMiddleBand.elementAt(i);
         outRealUpperBand[i] = tempReal2 + tempReal;
         outRealLowerBand[i] = tempReal2 - tempReal;
       }
     } else {
       for (var i = 0; i < inReal.length; i++) {
-        var tempReal = tempBuffer2.elementAt(i) * inNbDevUp;
-        var tempReal2 = outRealMiddleBand.elementAt(i);
+        final tempReal = tempBuffer2.elementAt(i) * inNbDevUp;
+        final tempReal2 = outRealMiddleBand.elementAt(i);
         outRealUpperBand[i] = tempReal2 + tempReal;
         outRealLowerBand[i] = tempReal2 - tempReal;
       }
     }
   } else if (inNbDevUp == 1.0) {
     for (var i = 0; i < inReal.length; i++) {
-      var tempReal = tempBuffer2.elementAt(i);
-      var tempReal2 = outRealMiddleBand.elementAt(i);
+      final tempReal = tempBuffer2.elementAt(i);
+      final tempReal2 = outRealMiddleBand.elementAt(i);
       outRealUpperBand[i] = tempReal2 + tempReal;
       outRealLowerBand[i] = tempReal2 - (tempReal * inNbDevDn);
     }
   } else if (inNbDevDn == 1.0) {
     for (var i = 0; i < inReal.length; i++) {
-      var tempReal = tempBuffer2.elementAt(i);
-      var tempReal2 = outRealMiddleBand.elementAt(i);
+      final tempReal = tempBuffer2.elementAt(i);
+      final tempReal2 = outRealMiddleBand.elementAt(i);
       outRealLowerBand[i] = tempReal2 - tempReal;
       outRealUpperBand[i] = tempReal2 + (tempReal * inNbDevUp);
     }
   } else {
     for (var i = 0; i < inReal.length; i++) {
-      var tempReal = tempBuffer2.elementAt(i);
-      var tempReal2 = outRealMiddleBand.elementAt(i);
+      final tempReal = tempBuffer2.elementAt(i);
+      final tempReal2 = outRealMiddleBand.elementAt(i);
       outRealUpperBand[i] = tempReal2 + (tempReal * inNbDevUp);
       outRealLowerBand[i] = tempReal2 - (tempReal * inNbDevDn);
     }
@@ -83,9 +82,9 @@ List BBands(List inReal, int inTimePeriod, double inNbDevUp, double inNbDevDn,
 }
 
 List Dema(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var firstEMA = Ema(inReal, inTimePeriod);
-  var secondEMA = Ema(
+  final outReal = List(inReal.length);
+  final firstEMA = Ema(inReal, inTimePeriod);
+  final secondEMA = Ema(
       firstEMA.sublist(
         inTimePeriod - 1,
       ),
@@ -101,9 +100,9 @@ List Dema(List inReal, int inTimePeriod) {
 }
 
 List ema(List inReal, int inTimePeriod, double k1) {
-  var outReal = new List(inReal.length);
-  var lookbackTotal = inTimePeriod - 1;
-  var startIdx = lookbackTotal;
+  final outReal = List(inReal.length);
+  final lookbackTotal = inTimePeriod - 1;
+  final startIdx = lookbackTotal;
   var today = startIdx - lookbackTotal;
   var i = inTimePeriod;
   var tempReal = 0.0;
@@ -129,33 +128,33 @@ List ema(List inReal, int inTimePeriod, double k1) {
 }
 
 List Ema(List inReal, int inTimePeriod) {
-  var k = 2.0 / inTimePeriod + 1;
-  var outReal = ema(inReal, inTimePeriod, k);
+  final k = 2.0 / inTimePeriod + 1;
+  final outReal = ema(inReal, inTimePeriod, k);
   return outReal;
 }
 
 List HtTrendline(List inReal) {
-  var outReal = new List(inReal.length);
-  var a = 0.0962;
-  var b = 0.5769;
-  var detrenderOdd = new List(3);
-  var detrenderEven = new List(3);
-  var q1Odd = new List(3);
-  var q1Even = new List(3);
-  var jIOdd = new List(3);
-  var jIEven = new List(3);
-  var jQOdd = new List(3);
-  var jQEven = new List(3);
+  final outReal = List(inReal.length);
+  const a = 0.0962;
+  const b = 0.5769;
+  final detrenderOdd = List(3);
+  final detrenderEven = List(3);
+  final q1Odd = List(3);
+  final q1Even = List(3);
+  final jIOdd = List(3);
+  final jIEven = List(3);
+  final jQOdd = List(3);
+  final jQEven = List(3);
   var smoothPriceIdx = 0;
-  var maxIdxSmoothPrice = (50 - 1);
-  var smoothPrice = new List(maxIdxSmoothPrice + 1);
+  const maxIdxSmoothPrice = 50 - 1;
+  final smoothPrice = List(maxIdxSmoothPrice + 1);
   var iTrend1 = 0.0;
   var iTrend2 = 0.0;
   var iTrend3 = 0.0;
   var tempReal = math.atan(1);
-  var rad2Deg = 45.0 / tempReal;
-  var lookbackTotal = 63;
-  var startIdx = lookbackTotal;
+  final rad2Deg = 45.0 / tempReal;
+  const lookbackTotal = 63;
+  const startIdx = lookbackTotal;
   var trailingWMAIdx = startIdx - lookbackTotal;
   var today = trailingWMAIdx;
   tempReal = inReal.elementAt(today);
@@ -219,14 +218,14 @@ List HtTrendline(List inReal) {
   var q2 = 0.0;
   var i2 = 0.0;
   for (; today < inReal.length;) {
-    var adjustedPrevPeriod = (0.075 * period) + 0.54;
-    var todayValue = inReal.elementAt(today);
+    final adjustedPrevPeriod = (0.075 * period) + 0.54;
+    final todayValue = inReal.elementAt(today);
     periodWMASub += todayValue;
     periodWMASub -= trailingWMAValue;
     periodWMASum += todayValue * 4.0;
     trailingWMAValue = inReal.elementAt(trailingWMAIdx);
     trailingWMAIdx++;
-    var smoothedValue = periodWMASum * 0.1;
+    final smoothedValue = periodWMASum * 0.1;
     periodWMASum -= periodWMASub;
     smoothPrice[smoothPriceIdx] = smoothedValue;
     if ((today % 2) == 0) {
@@ -344,8 +343,8 @@ List HtTrendline(List inReal) {
 
     period = (0.2 * period) + (0.8 * tempReal);
     smoothPeriod = (0.33 * period) + (0.67 * smoothPeriod);
-    var DCPeriod = smoothPeriod + 0.5;
-    var DCPeriodInt = DCPeriod.floor();
+    final DCPeriod = smoothPeriod + 0.5;
+    final DCPeriodInt = DCPeriod.floor();
     var idx = today;
     tempReal = 0.0;
     for (var i = 0; i < DCPeriodInt; i++) {
@@ -377,11 +376,11 @@ List HtTrendline(List inReal) {
 }
 
 List Kama(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var constMax = 2.0 / (30.0 + 1.0);
-  var constDiff = 2.0 / (2.0 + 1.0) - constMax;
-  var lookbackTotal = inTimePeriod;
-  var startIdx = lookbackTotal;
+  final outReal = List(inReal.length);
+  const constMax = 2.0 / (30.0 + 1.0);
+  const constDiff = 2.0 / (2.0 + 1.0) - constMax;
+  final lookbackTotal = inTimePeriod;
+  final startIdx = lookbackTotal;
   var sumROC1 = 0.0;
   var today = startIdx - lookbackTotal;
   var trailingIdx = today;
@@ -455,7 +454,7 @@ List Kama(List inReal, int inTimePeriod) {
 }
 
 List Ma(List inReal, int inTimePeriod, MaType inMAType) {
-  var outReal = new List(inReal.length);
+  var outReal = List(inReal.length);
   if (inTimePeriod == 1) {
     outReal = List.from(inReal);
     return outReal;
@@ -483,9 +482,9 @@ List Ma(List inReal, int inTimePeriod, MaType inMAType) {
       outReal = Kama(inReal, inTimePeriod);
       break;
     case MaType.MAMA:
-      var tmpList = Mama(inReal, 0.5, 0.05);
+      final tmpList = Mama(inReal, 0.5, 0.05);
       outReal = tmpList[0];
-      ;
+
       break;
     case MaType.T3MA:
       outReal = T3(inReal, inTimePeriod, 0.7);
@@ -495,21 +494,21 @@ List Ma(List inReal, int inTimePeriod, MaType inMAType) {
 }
 
 List Mama(List inReal, double inFastLimit, double inSlowLimit) {
-  var outMAMA = new List(inReal.length);
-  var outFAMA = new List(inReal.length);
-  var a = 0.0962;
-  var b = 0.5769;
-  var detrenderOdd = new List(3);
-  var detrenderEven = new List(3);
-  var q1Odd = new List(3);
-  var q1Even = new List(3);
-  var jIOdd = new List(3);
-  var jIEven = new List(3);
-  var jQOdd = new List(3);
-  var jQEven = new List(3);
-  var rad2Deg = 180.0 / (4.0 * math.atan(1));
-  var lookbackTotal = 32;
-  var startIdx = lookbackTotal;
+  final outMAMA = List(inReal.length);
+  final outFAMA = List(inReal.length);
+  const a = 0.0962;
+  const b = 0.5769;
+  final detrenderOdd = List(3);
+  final detrenderEven = List(3);
+  final q1Odd = List(3);
+  final q1Even = List(3);
+  final jIOdd = List(3);
+  final jIEven = List(3);
+  final jQOdd = List(3);
+  final jQEven = List(3);
+  final rad2Deg = 180.0 / (4.0 * math.atan(1));
+  const lookbackTotal = 32;
+  const startIdx = lookbackTotal;
   var trailingWMAIdx = startIdx - lookbackTotal;
   var today = trailingWMAIdx;
   var tempReal = inReal.elementAt(today);
@@ -768,10 +767,10 @@ List Mama(List inReal, double inFastLimit, double inSlowLimit) {
 
 List MaVp(List inReal, List inPeriods, int inMinPeriod, int inMaxPeriod,
     MaType inMAType) {
-  var outReal = new List(inReal.length);
-  var startIdx = inMaxPeriod - 1;
-  var outputSize = inReal.length;
-  var localPeriodArray = new List(outputSize);
+  final outReal = List(inReal.length);
+  final startIdx = inMaxPeriod - 1;
+  final outputSize = inReal.length;
+  final localPeriodArray = List(outputSize);
   for (var i = startIdx; i < outputSize; i++) {
     var tempInt = inPeriods.elementAt(i);
     if (tempInt < inMinPeriod) {
@@ -783,9 +782,9 @@ List MaVp(List inReal, List inPeriods, int inMinPeriod, int inMaxPeriod,
     localPeriodArray[i] = tempInt;
   }
   for (var i = startIdx; i < outputSize; i++) {
-    var curPeriod = localPeriodArray.elementAt(i);
+    final curPeriod = localPeriodArray.elementAt(i);
     if (curPeriod != 0) {
-      var localOutputArray = Ma(inReal, curPeriod, inMAType);
+      final localOutputArray = Ma(inReal, curPeriod, inMAType);
       outReal[i] = localOutputArray.elementAt(i);
       for (var j = i + 1; j < outputSize; j++) {
         if (localPeriodArray.elementAt(j) == curPeriod) {
@@ -799,9 +798,9 @@ List MaVp(List inReal, List inPeriods, int inMinPeriod, int inMaxPeriod,
 }
 
 List MidPoint(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var nbInitialElementNeeded = inTimePeriod - 1;
-  var startIdx = nbInitialElementNeeded;
+  final outReal = List(inReal.length);
+  final nbInitialElementNeeded = inTimePeriod - 1;
+  final startIdx = nbInitialElementNeeded;
   var outIdx = inTimePeriod - 1;
   var today = startIdx;
   var trailingIdx = startIdx - nbInitialElementNeeded;
@@ -810,7 +809,7 @@ List MidPoint(List inReal, int inTimePeriod) {
     trailingIdx++;
     var highest = lowest;
     for (var i = trailingIdx; i <= today; i++) {
-      var tmp = inReal.elementAt(i);
+      final tmp = inReal.elementAt(i);
       if (tmp < lowest) {
         lowest = tmp;
       } else if (tmp > highest) {
@@ -825,9 +824,9 @@ List MidPoint(List inReal, int inTimePeriod) {
 }
 
 List MidPrice(List inHigh, List inLow, int inTimePeriod) {
-  var outReal = new List(inHigh.length);
-  var nbInitialElementNeeded = inTimePeriod - 1;
-  var startIdx = nbInitialElementNeeded;
+  final outReal = List(inHigh.length);
+  final nbInitialElementNeeded = inTimePeriod - 1;
+  final startIdx = nbInitialElementNeeded;
   var outIdx = inTimePeriod - 1;
   var today = startIdx;
   var trailingIdx = startIdx - nbInitialElementNeeded;
@@ -854,20 +853,20 @@ List MidPrice(List inHigh, List inLow, int inTimePeriod) {
 }
 
 List Sar(List inHigh, List inLow, double inAcceleration, double inMaximum) {
-  var outReal = new List(inHigh.length);
+  final outReal = List(inHigh.length);
   var af = inAcceleration;
   if (af > inMaximum) {
     af = inMaximum;
     inAcceleration = inMaximum;
   }
 
-  var epTemp = MinusDM(inHigh, inLow, 1);
+  final epTemp = MinusDM(inHigh, inLow, 1);
   var isLong = 1;
   if (epTemp.elementAt(1) > 0) {
     isLong = 0;
   }
 
-  var startIdx = 1;
+  const startIdx = 1;
   var outIdx = startIdx;
   var todayIdx = startIdx;
   var newHigh = inHigh.elementAt(todayIdx - 1);
@@ -995,8 +994,8 @@ List SarExt(
     double inAccelerationInitShort,
     double inAccelerationShort,
     double inAccelerationMaxShort) {
-  var outReal = new List(inHigh.length);
-  var startIdx = 1;
+  final outReal = List(inHigh.length);
+  const startIdx = 1;
   var afLong = inAccelerationInitLong;
   var afShort = inAccelerationInitShort;
   if (afLong > inAccelerationMaxLong) {
@@ -1019,7 +1018,7 @@ List SarExt(
 
   var isLong = 0;
   if (inStartValue == 0) {
-    var epTemp = MinusDM(inHigh, inLow, 1);
+    final epTemp = MinusDM(inHigh, inLow, 1);
     if (epTemp.elementAt(1) > 0) {
       isLong = 0;
     } else {
@@ -1163,9 +1162,9 @@ List SarExt(
 }
 
 List Sma(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var lookbackTotal = inTimePeriod - 1;
-  var startIdx = lookbackTotal;
+  final outReal = List(inReal.length);
+  final lookbackTotal = inTimePeriod - 1;
+  final startIdx = lookbackTotal;
   var periodTotal = 0.0;
   var trailingIdx = startIdx - lookbackTotal;
   var i = trailingIdx;
@@ -1179,7 +1178,7 @@ List Sma(List inReal, int inTimePeriod) {
   var outIdx = startIdx;
   for (var ok = true; ok;) {
     periodTotal += inReal.elementAt(i);
-    var tempReal = periodTotal;
+    final tempReal = periodTotal;
     periodTotal -= inReal.elementAt(trailingIdx);
     outReal[outIdx] = tempReal / inTimePeriod;
     trailingIdx++;
@@ -1191,12 +1190,12 @@ List Sma(List inReal, int inTimePeriod) {
 }
 
 List T3(List inReal, int inTimePeriod, double inVFactor) {
-  var outReal = new List(inReal.length);
-  var lookbackTotal = 6 * (inTimePeriod - 1);
-  var startIdx = lookbackTotal;
+  final outReal = List(inReal.length);
+  final lookbackTotal = 6 * (inTimePeriod - 1);
+  final startIdx = lookbackTotal;
   var today = startIdx - lookbackTotal;
-  var k = 2.0 / (inTimePeriod + 1.0);
-  var oneMinusK = 1.0 - k;
+  final k = 2.0 / (inTimePeriod + 1.0);
+  final oneMinusK = 1.0 - k;
   var tempReal = inReal.elementAt(today);
   today++;
   for (var i = inTimePeriod - 1; i > 0; i--) {
@@ -1259,10 +1258,10 @@ List T3(List inReal, int inTimePeriod, double inVFactor) {
     today++;
   }
   tempReal = inVFactor * inVFactor;
-  var c1 = -(tempReal * inVFactor);
-  var c2 = 3.0 * (tempReal - c1);
-  var c3 = -6.0 * tempReal - 3.0 * (inVFactor - c1);
-  var c4 = 1.0 + 3.0 * inVFactor - c1 + 3.0 * tempReal;
+  final c1 = -(tempReal * inVFactor);
+  final c2 = 3.0 * (tempReal - c1);
+  final c3 = -6.0 * tempReal - 3.0 * (inVFactor - c1);
+  final c4 = 1.0 + 3.0 * inVFactor - c1 + 3.0 * tempReal;
   var outIdx = lookbackTotal;
   outReal[outIdx] = c1 * e6 + c2 * e5 + c3 * e4 + c4 * e3;
   outIdx++;
@@ -1281,14 +1280,14 @@ List T3(List inReal, int inTimePeriod, double inVFactor) {
 }
 
 List Tema(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var firstEMA = Ema(inReal, inTimePeriod);
-  var secondEMA = Ema(
+  final outReal = List(inReal.length);
+  final firstEMA = Ema(inReal, inTimePeriod);
+  final secondEMA = Ema(
       firstEMA.sublist(
         inTimePeriod - 1,
       ),
       inTimePeriod);
-  var thirdEMA = Ema(
+  final thirdEMA = Ema(
       secondEMA.sublist(
         inTimePeriod - 1,
       ),
@@ -1308,14 +1307,14 @@ List Tema(List inReal, int inTimePeriod) {
 }
 
 List Trima(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var lookbackTotal = inTimePeriod - 1;
-  var startIdx = lookbackTotal;
+  final outReal = List(inReal.length);
+  final lookbackTotal = inTimePeriod - 1;
+  final startIdx = lookbackTotal;
   var outIdx = inTimePeriod - 1;
-  var factor = null;
+  var factor = null; //TODO: handle this
   if (inTimePeriod % 2 == 1) {
-    var i = inTimePeriod >> 1;
-    factor = (i + 1.0) * (i + 1.0);
+    final i = inTimePeriod >> 1;
+    var factor = (i + 1.0) * (i + 1.0);
     factor = 1.0 / factor;
     var trailingIdx = startIdx - lookbackTotal;
     var middleIdx = trailingIdx + i;
@@ -1323,14 +1322,14 @@ List Trima(List inReal, int inTimePeriod) {
     var numerator = 0.0;
     var numeratorSub = 0.0;
     for (var i = middleIdx; i >= trailingIdx; i--) {
-      var tempReal = inReal.elementAt(i);
+      final tempReal = inReal.elementAt(i);
       numeratorSub += tempReal;
       numerator += numeratorSub;
     }
     var numeratorAdd = 0.0;
     middleIdx++;
     for (var i = middleIdx; i <= todayIdx; i++) {
-      var tempReal = inReal.elementAt(i);
+      final tempReal = inReal.elementAt(i);
       numeratorAdd += tempReal;
       numerator += numeratorAdd;
     }
@@ -1358,7 +1357,7 @@ List Trima(List inReal, int inTimePeriod) {
       outIdx++;
     }
   } else {
-    var i = (inTimePeriod >> 1);
+    final i = inTimePeriod >> 1;
     factor = i * (i + 1);
     factor = 1.0 / factor;
     var trailingIdx = startIdx - lookbackTotal;
@@ -1367,14 +1366,14 @@ List Trima(List inReal, int inTimePeriod) {
     var numerator = 0.0;
     var numeratorSub = 0.0;
     for (var i = middleIdx; i >= trailingIdx; i--) {
-      var tempReal = inReal.elementAt(i);
+      final tempReal = inReal.elementAt(i);
       numeratorSub += tempReal;
       numerator += numeratorSub;
     }
     var numeratorAdd = 0.0;
     middleIdx++;
     for (var i = middleIdx; i <= todayIdx; i++) {
-      var tempReal = inReal.elementAt(i);
+      final tempReal = inReal.elementAt(i);
       numeratorAdd += tempReal;
       numerator += numeratorAdd;
     }
@@ -1406,15 +1405,15 @@ List Trima(List inReal, int inTimePeriod) {
 }
 
 List Wma(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var lookbackTotal = inTimePeriod - 1;
-  var startIdx = lookbackTotal;
+  var outReal = List(inReal.length);
+  final lookbackTotal = inTimePeriod - 1;
+  final startIdx = lookbackTotal;
   if (inTimePeriod == 1) {
     outReal = List.from(inReal);
     return outReal;
   }
 
-  var divider = (inTimePeriod * (inTimePeriod + 1)) >> 1;
+  final divider = (inTimePeriod * (inTimePeriod + 1)) >> 1;
   var outIdx = inTimePeriod - 1;
   var trailingIdx = startIdx - lookbackTotal;
   var periodSum = 0.0;
@@ -1422,7 +1421,7 @@ List Wma(List inReal, int inTimePeriod) {
   var inIdx = trailingIdx;
   var i = 1;
   for (; inIdx < startIdx;) {
-    var tempReal = inReal.elementAt(inIdx);
+    final tempReal = inReal.elementAt(inIdx);
     periodSub += tempReal;
     periodSum += tempReal * i;
     inIdx++;
@@ -1430,7 +1429,7 @@ List Wma(List inReal, int inTimePeriod) {
   }
   var trailingValue = 0.0;
   for (; inIdx < inReal.length;) {
-    var tempReal = inReal.elementAt(inIdx);
+    final tempReal = inReal.elementAt(inIdx);
     periodSub += tempReal;
     periodSub -= trailingValue;
     periodSum += tempReal * inTimePeriod;
@@ -1445,10 +1444,10 @@ List Wma(List inReal, int inTimePeriod) {
 }
 
 List Adx(List inHigh, List inLow, List inClose, int inTimePeriod) {
-  var outReal = new List(inClose.length);
-  var inTimePeriodF = inTimePeriod;
-  var lookbackTotal = (2 * inTimePeriod) - 1;
-  var startIdx = lookbackTotal;
+  final outReal = List(inClose.length);
+  final inTimePeriodF = inTimePeriod;
+  final lookbackTotal = (2 * inTimePeriod) - 1;
+  final startIdx = lookbackTotal;
   var outIdx = inTimePeriod;
   var prevMinusDM = 0.0;
   var prevPlusDM = 0.0;
@@ -1460,10 +1459,10 @@ List Adx(List inHigh, List inLow, List inClose, int inTimePeriod) {
   for (var i = inTimePeriod - 1; i > 0; i--) {
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     if ((diffM > 0) && (diffP < diffM)) {
       prevMinusDM += diffM;
@@ -1489,10 +1488,10 @@ List Adx(List inHigh, List inLow, List inClose, int inTimePeriod) {
   for (var i = inTimePeriod; i > 0; i--) {
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     prevMinusDM -= prevMinusDM / inTimePeriodF;
     prevPlusDM -= prevPlusDM / inTimePeriodF;
@@ -1516,8 +1515,8 @@ List Adx(List inHigh, List inLow, List inClose, int inTimePeriod) {
     prevTR = prevTR - (prevTR / inTimePeriodF) + tempReal;
     prevClose = inClose.elementAt(today);
     if (!(((-(0.00000000000001)) < prevTR) && (prevTR < (0.00000000000001)))) {
-      var minusDI = (100.0 * (prevMinusDM / prevTR));
-      var plusDI = (100.0 * (prevPlusDM / prevTR));
+      final minusDI = (100.0 * (prevMinusDM / prevTR));
+      final plusDI = (100.0 * (prevPlusDM / prevTR));
       tempReal = minusDI + plusDI;
       if (!(((-(0.00000000000001)) < tempReal) &&
           (tempReal < (0.00000000000001)))) {
@@ -1525,16 +1524,16 @@ List Adx(List inHigh, List inLow, List inClose, int inTimePeriod) {
       }
     }
   }
-  var prevADX = (sumDX / inTimePeriodF);
+  var prevADX = sumDX / inTimePeriodF;
   outReal[startIdx] = prevADX;
   outIdx = startIdx + 1;
   today++;
   for (; today < inClose.length;) {
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     prevMinusDM -= prevMinusDM / inTimePeriodF;
     prevPlusDM -= prevPlusDM / inTimePeriodF;
@@ -1558,8 +1557,8 @@ List Adx(List inHigh, List inLow, List inClose, int inTimePeriod) {
     prevTR = prevTR - (prevTR / inTimePeriodF) + tempReal;
     prevClose = inClose.elementAt(today);
     if (!(((-(0.00000000000001)) < prevTR) && (prevTR < (0.00000000000001)))) {
-      var minusDI = (100.0 * (prevMinusDM / prevTR));
-      var plusDI = (100.0 * (prevPlusDM / prevTR));
+      final minusDI = (100.0 * (prevMinusDM / prevTR));
+      final plusDI = (100.0 * (prevPlusDM / prevTR));
       tempReal = minusDI + plusDI;
       if (!(((-(0.00000000000001)) < tempReal) &&
           (tempReal < (0.00000000000001)))) {
@@ -1577,9 +1576,9 @@ List Adx(List inHigh, List inLow, List inClose, int inTimePeriod) {
 }
 
 List AdxR(List inHigh, List inLow, List inClose, int inTimePeriod) {
-  var outReal = new List(inClose.length);
-  var startIdx = (2 * inTimePeriod) - 1;
-  var tmpadx = Adx(inHigh, inLow, inClose, inTimePeriod);
+  final outReal = List(inClose.length);
+  final startIdx = (2 * inTimePeriod) - 1;
+  final tmpadx = Adx(inHigh, inLow, inClose, inTimePeriod);
   var i = startIdx;
   var j = startIdx + inTimePeriod - 1;
   for (var outIdx = startIdx + inTimePeriod - 1;
@@ -1596,8 +1595,8 @@ List Apo(List inReal, int inFastPeriod, int inSlowPeriod, MaType inMAType) {
     inFastPeriod = inSlowPeriod;
   }
 
-  var tempBuffer = Ma(inReal, inFastPeriod, inMAType);
-  var outReal = Ma(inReal, inSlowPeriod, inMAType);
+  final tempBuffer = Ma(inReal, inFastPeriod, inMAType);
+  final outReal = Ma(inReal, inSlowPeriod, inMAType);
   for (var i = inSlowPeriod - 1; i < inReal.length; i++) {
     outReal[i] = tempBuffer.elementAt(i) - outReal.elementAt(i);
   }
@@ -1605,9 +1604,9 @@ List Apo(List inReal, int inFastPeriod, int inSlowPeriod, MaType inMAType) {
 }
 
 List Aroon(List inHigh, List inLow, int inTimePeriod) {
-  var outAroonUp = new List(inHigh.length);
-  var outAroonDown = new List(inHigh.length);
-  var startIdx = inTimePeriod;
+  final outAroonUp = List(inHigh.length);
+  final outAroonDown = List(inHigh.length);
+  final startIdx = inTimePeriod;
   var outIdx = startIdx;
   var today = startIdx;
   var trailingIdx = startIdx - inTimePeriod;
@@ -1615,7 +1614,7 @@ List Aroon(List inHigh, List inLow, int inTimePeriod) {
   var highestIdx = -1;
   var lowest = 0.0;
   var highest = 0.0;
-  var factor = 100.0 / inTimePeriod;
+  final factor = 100.0 / inTimePeriod;
   for (; today < inHigh.length;) {
     var tmp = inLow.elementAt(today);
     if (lowestIdx < trailingIdx) {
@@ -1667,8 +1666,8 @@ List Aroon(List inHigh, List inLow, int inTimePeriod) {
 }
 
 List AroonOsc(List inHigh, List inLow, int inTimePeriod) {
-  var outReal = new List(inHigh.length);
-  var startIdx = inTimePeriod;
+  final outReal = List(inHigh.length);
+  final startIdx = inTimePeriod;
   var outIdx = startIdx;
   var today = startIdx;
   var trailingIdx = startIdx - inTimePeriod;
@@ -1676,7 +1675,7 @@ List AroonOsc(List inHigh, List inLow, int inTimePeriod) {
   var highestIdx = -1;
   var lowest = 0.0;
   var highest = 0.0;
-  var factor = 100.0 / inTimePeriod;
+  final factor = 100.0 / inTimePeriod;
   for (; today < inHigh.length;) {
     var tmp = inLow.elementAt(today);
     if (lowestIdx < trailingIdx) {
@@ -1718,7 +1717,7 @@ List AroonOsc(List inHigh, List inLow, int inTimePeriod) {
       highest = tmp;
     }
 
-    var aroon = factor * highestIdx - lowestIdx;
+    final aroon = factor * highestIdx - lowestIdx;
     outReal[outIdx] = aroon;
     outIdx++;
     trailingIdx++;
@@ -1728,9 +1727,9 @@ List AroonOsc(List inHigh, List inLow, int inTimePeriod) {
 }
 
 List Bop(List inOpen, List inHigh, List inLow, List inClose) {
-  var outReal = new List(inClose.length);
+  final outReal = List(inClose.length);
   for (var i = 0; i < inClose.length; i++) {
-    var tempReal = inHigh.elementAt(i) - inLow.elementAt(i);
+    final tempReal = inHigh.elementAt(i) - inLow.elementAt(i);
     if (tempReal < (0.00000000000001)) {
       outReal[i] = 0.0;
     } else {
@@ -1741,9 +1740,9 @@ List Bop(List inOpen, List inHigh, List inLow, List inClose) {
 }
 
 List Cmo(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var lookbackTotal = inTimePeriod;
-  var startIdx = lookbackTotal;
+  var outReal = List(inReal.length);
+  final lookbackTotal = inTimePeriod;
+  final startIdx = lookbackTotal;
   var outIdx = startIdx;
   if (inTimePeriod == 1) {
     outReal = List.from(inReal);
@@ -1756,8 +1755,8 @@ List Cmo(List inReal, int inTimePeriod) {
   var prevLoss = 0.0;
   today++;
   for (var i = inTimePeriod; i > 0; i--) {
-    var tempValue1 = inReal.elementAt(today);
-    var tempValue2 = tempValue1 - prevValue;
+    final tempValue1 = inReal.elementAt(today);
+    final tempValue2 = tempValue1 - prevValue;
     prevValue = tempValue1;
     if (tempValue2 < 0) {
       prevLoss -= tempValue2;
@@ -1769,7 +1768,7 @@ List Cmo(List inReal, int inTimePeriod) {
   prevLoss /= inTimePeriod;
   prevGain /= inTimePeriod;
   if (today > startIdx) {
-    var tempValue1 = prevGain + prevLoss;
+    final tempValue1 = prevGain + prevLoss;
     if (!(((-(0.00000000000001)) < tempValue1) &&
         (tempValue1 < (0.00000000000001)))) {
       outReal[outIdx] = 100.0 * ((prevGain - prevLoss) / tempValue1);
@@ -1779,8 +1778,8 @@ List Cmo(List inReal, int inTimePeriod) {
     outIdx++;
   } else {
     for (; today < startIdx;) {
-      var tempValue1 = inReal.elementAt(today);
-      var tempValue2 = tempValue1 - prevValue;
+      final tempValue1 = inReal.elementAt(today);
+      final tempValue2 = tempValue1 - prevValue;
       prevValue = tempValue1;
       prevLoss *= inTimePeriod - 1;
       prevGain *= inTimePeriod - 1;
@@ -1797,7 +1796,7 @@ List Cmo(List inReal, int inTimePeriod) {
   for (; today < inReal.length;) {
     var tempValue1 = inReal.elementAt(today);
     today++;
-    var tempValue2 = tempValue1 - prevValue;
+    final tempValue2 = tempValue1 - prevValue;
     prevValue = tempValue1;
     prevLoss *= inTimePeriod - 1;
     prevGain *= inTimePeriod - 1;
@@ -1821,12 +1820,12 @@ List Cmo(List inReal, int inTimePeriod) {
 }
 
 List Cci(List inHigh, List inLow, List inClose, int inTimePeriod) {
-  var outReal = new List(inClose.length);
+  final outReal = List(inClose.length);
   var circBufferIdx = 0;
-  var lookbackTotal = inTimePeriod - 1;
-  var startIdx = lookbackTotal;
-  var circBuffer = new List(inTimePeriod);
-  var maxIdxCircBuffer = (inTimePeriod - 1);
+  final lookbackTotal = inTimePeriod - 1;
+  final startIdx = lookbackTotal;
+  final circBuffer = List(inTimePeriod);
+  final maxIdxCircBuffer = inTimePeriod - 1;
   var i = startIdx - lookbackTotal;
   if (inTimePeriod > 1) {
     for (; i < startIdx;) {
@@ -1842,7 +1841,7 @@ List Cci(List inHigh, List inLow, List inClose, int inTimePeriod) {
 
   var outIdx = inTimePeriod - 1;
   for (; i < inClose.length;) {
-    var lastValue =
+    final lastValue =
         (inHigh.elementAt(i) + inLow.elementAt(i) + inClose.elementAt(i)) / 3;
     circBuffer[circBufferIdx] = lastValue;
     var theAverage = 0.0;
@@ -1854,7 +1853,7 @@ List Cci(List inHigh, List inLow, List inClose, int inTimePeriod) {
     for (var j = 0; j < inTimePeriod; j++) {
       tempReal2 += (circBuffer.elementAt(j) - theAverage).abs();
     }
-    var tempReal = lastValue - theAverage;
+    final tempReal = lastValue - theAverage;
     if ((tempReal != 0.0) && (tempReal2 != 0.0)) {
       outReal[outIdx] = tempReal / (0.015 * (tempReal2 / inTimePeriod));
     } else {
@@ -1872,13 +1871,13 @@ List Cci(List inHigh, List inLow, List inClose, int inTimePeriod) {
 }
 
 List Dx(List inHigh, List inLow, List inClose, int inTimePeriod) {
-  var outReal = new List(inClose.length);
+  final outReal = List(inClose.length);
   var lookbackTotal = 2;
   if (inTimePeriod > 1) {
     lookbackTotal = inTimePeriod;
   }
 
-  var startIdx = lookbackTotal;
+  final startIdx = lookbackTotal;
   var outIdx = startIdx;
   var prevMinusDM = 0.0;
   var prevPlusDM = 0.0;
@@ -1892,10 +1891,10 @@ List Dx(List inHigh, List inLow, List inClose, int inTimePeriod) {
     i--;
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     if ((diffM > 0) && (diffP < diffM)) {
       prevMinusDM += diffM;
@@ -1918,9 +1917,9 @@ List Dx(List inHigh, List inLow, List inClose, int inTimePeriod) {
     prevClose = inClose.elementAt(today);
   }
   if (!(((-(0.00000000000001)) < prevTR) && (prevTR < (0.00000000000001)))) {
-    var minusDI = (100.0 * (prevMinusDM / prevTR));
-    var plusDI = (100.0 * (prevPlusDM / prevTR));
-    var tempReal = minusDI + plusDI;
+    final minusDI = (100.0 * (prevMinusDM / prevTR));
+    final plusDI = (100.0 * (prevPlusDM / prevTR));
+    final tempReal = minusDI + plusDI;
     if (!(((-(0.00000000000001)) < tempReal) &&
         (tempReal < (0.00000000000001)))) {
       outReal[outIdx] = (100.0 * ((minusDI - plusDI).abs() / tempReal));
@@ -1934,10 +1933,10 @@ List Dx(List inHigh, List inLow, List inClose, int inTimePeriod) {
   for (; today < inClose.length - 1;) {
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     prevMinusDM -= prevMinusDM / inTimePeriod;
     prevPlusDM -= prevPlusDM / inTimePeriod;
@@ -1961,8 +1960,8 @@ List Dx(List inHigh, List inLow, List inClose, int inTimePeriod) {
     prevTR = prevTR - (prevTR / inTimePeriod) + tempReal;
     prevClose = inClose.elementAt(today);
     if (!(((-(0.00000000000001)) < prevTR) && (prevTR < (0.00000000000001)))) {
-      var minusDI = (100.0 * (prevMinusDM / prevTR));
-      var plusDI = (100.0 * (prevPlusDM / prevTR));
+      final minusDI = (100.0 * (prevMinusDM / prevTR));
+      final plusDI = (100.0 * (prevPlusDM / prevTR));
       tempReal = minusDI + plusDI;
       if (!(((-(0.00000000000001)) < tempReal) &&
           (tempReal < (0.00000000000001)))) {
@@ -1998,26 +1997,27 @@ List Macd(List inReal, int inFastPeriod, int inSlowPeriod, int inSignalPeriod) {
     inFastPeriod = 12;
     k2 = 0.15;
   }
-  var lookbackSignal = inSignalPeriod - 1;
+  final lookbackSignal = inSignalPeriod - 1;
   var lookbackTotal = lookbackSignal;
-  lookbackTotal += (inSlowPeriod - 1);
-  var fastEMABuffer = ema(inReal, inFastPeriod, k2);
-  var slowEMABuffer = ema(inReal, inSlowPeriod, k1);
-  for (var i = 0; i < fastEMABuffer.length; i++) { 
-    var fastEMABufferElt = fastEMABuffer?.elementAt(i) ?? 0.0;
-    var slowEMABufferElt = slowEMABuffer?.elementAt(i) ?? 0.0;
+  lookbackTotal += inSlowPeriod - 1;
+  final fastEMABuffer = ema(inReal, inFastPeriod, k2);
+  final slowEMABuffer = ema(inReal, inSlowPeriod, k1);
+  for (var i = 0; i < fastEMABuffer.length; i++) {
+    final fastEMABufferElt = fastEMABuffer?.elementAt(i) ?? 0.0;
+    final slowEMABufferElt = slowEMABuffer?.elementAt(i) ?? 0.0;
     //fastEMABuffer[i] = exceptionAware<dynamic>(() => fastEMABuffer.elementAt(i) - slowEMABuffer.elementAt(i));
     fastEMABuffer[i] = fastEMABufferElt - slowEMABufferElt;
- }
-  var outMACD = new List(inReal.length);
+  }
+  final outMACD = List(inReal.length);
   for (var i = lookbackTotal - 1; i < fastEMABuffer.length; i++) {
     outMACD[i] = fastEMABuffer.elementAt(i);
   }
-  var outMACDSignal = ema(outMACD, inSignalPeriod, (2.0 /( inSignalPeriod + 1).toDouble()));
-  var outMACDHist = new List(inReal.length);
+  final outMACDSignal =
+      ema(outMACD, inSignalPeriod, (2.0 / (inSignalPeriod + 1).toDouble()));
+  final outMACDHist = List(inReal.length);
   for (var i = lookbackTotal; i < outMACDHist.length; i++) {
-    var outMacdElt = outMACD?.elementAt(i) ?? 0.0;
-    var outMACDSignalElt = outMACDSignal?.elementAt(i) ?? 0.0;
+    final outMacdElt = outMACD?.elementAt(i) ?? 0.0;
+    final outMACDSignalElt = outMACDSignal?.elementAt(i) ?? 0.0;
     outMACDHist[i] = outMacdElt - outMACDSignalElt;
   }
   return [outMACD, outMACDSignal, outMACDHist];
@@ -2037,17 +2037,17 @@ List MacdExt(
   } else {
     lookbackLargest = inFastPeriod;
   }
-  var lookbackTotal = (inSignalPeriod - 1) + (lookbackLargest - 1);
-  var outMACD = new List(inReal.length);
-  var outMACDSignal = new List(inReal.length);
-  var outMACDHist = new List(inReal.length);
-  var slowMABuffer = Ma(inReal, inSlowPeriod, inSlowMAType);
-  var fastMABuffer = Ma(inReal, inFastPeriod, inFastMAType);
-  var tempBuffer1 = new List(inReal.length);
+  final lookbackTotal = (inSignalPeriod - 1) + (lookbackLargest - 1);
+  final outMACD = List(inReal.length);
+  final outMACDSignal = List(inReal.length);
+  final outMACDHist = List(inReal.length);
+  final slowMABuffer = Ma(inReal, inSlowPeriod, inSlowMAType);
+  final fastMABuffer = Ma(inReal, inFastPeriod, inFastMAType);
+  final tempBuffer1 = List(inReal.length);
   for (var i = 0; i < slowMABuffer.length; i++) {
     tempBuffer1[i] = fastMABuffer.elementAt(i) - slowMABuffer.elementAt(i);
   }
-  var tempBuffer2 = Ma(tempBuffer1, inSignalPeriod, inSignalMAType);
+  final tempBuffer2 = Ma(tempBuffer1, inSignalPeriod, inSignalMAType);
   for (var i = lookbackTotal; i < outMACDHist.length; i++) {
     outMACD[i] = tempBuffer1.elementAt(i);
     outMACDSignal[i] = tempBuffer2.elementAt(i);
@@ -2061,13 +2061,13 @@ List MacdFix(List inReal, int inSignalPeriod) {
 }
 
 List MinusDI(List inHigh, List inLow, List inClose, int inTimePeriod) {
-  var outReal = new List(inClose.length);
+  final outReal = List(inClose.length);
   var lookbackTotal = 1;
   if (inTimePeriod > 1) {
     lookbackTotal = inTimePeriod;
   }
 
-  var startIdx = lookbackTotal;
+  final startIdx = lookbackTotal;
   var outIdx = startIdx;
   var prevHigh = 0.0;
   var prevLow = 0.0;
@@ -2080,10 +2080,10 @@ List MinusDI(List inHigh, List inLow, List inClose, int inTimePeriod) {
     for (; today < inClose.length - 1;) {
       today++;
       var tempReal = inHigh.elementAt(today);
-      var diffP = tempReal - prevHigh;
+      final diffP = tempReal - prevHigh;
       prevHigh = tempReal;
       tempReal = inLow.elementAt(today);
-      var diffM = prevLow - tempReal;
+      final diffM = prevLow - tempReal;
       prevLow = tempReal;
       if ((diffM > 0) && (diffP < diffM)) {
         tempReal = prevHigh - prevLow;
@@ -2124,10 +2124,10 @@ List MinusDI(List inHigh, List inLow, List inClose, int inTimePeriod) {
     i--;
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     if ((diffM > 0) && (diffP < diffM)) {
       prevMinusDM += diffM;
@@ -2152,10 +2152,10 @@ List MinusDI(List inHigh, List inLow, List inClose, int inTimePeriod) {
     i--;
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     if ((diffM > 0) && (diffP < diffM)) {
       prevMinusDM = prevMinusDM - (prevMinusDM / inTimePeriod) + diffM;
@@ -2185,10 +2185,10 @@ List MinusDI(List inHigh, List inLow, List inClose, int inTimePeriod) {
   for (; today < inClose.length - 1;) {
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     if ((diffM > 0) && (diffP < diffM)) {
       prevMinusDM = prevMinusDM - (prevMinusDM / inTimePeriod) + diffM;
@@ -2219,13 +2219,13 @@ List MinusDI(List inHigh, List inLow, List inClose, int inTimePeriod) {
 }
 
 List MinusDM(List inHigh, List inLow, int inTimePeriod) {
-  var outReal = new List(inHigh.length);
+  final outReal = List(inHigh.length);
   var lookbackTotal = 1;
   if (inTimePeriod > 1) {
     lookbackTotal = inTimePeriod - 1;
   }
 
-  var startIdx = lookbackTotal;
+  final startIdx = lookbackTotal;
   var outIdx = startIdx;
   var today = startIdx;
   var prevHigh = 0.0;
@@ -2237,10 +2237,10 @@ List MinusDM(List inHigh, List inLow, int inTimePeriod) {
     for (; today < inHigh.length - 1;) {
       today++;
       var tempReal = inHigh.elementAt(today);
-      var diffP = tempReal - prevHigh;
+      final diffP = tempReal - prevHigh;
       prevHigh = tempReal;
       tempReal = inLow.elementAt(today);
-      var diffM = prevLow - tempReal;
+      final diffM = prevLow - tempReal;
       prevLow = tempReal;
       if ((diffM > 0) && (diffP < diffM)) {
         outReal[outIdx] = diffM;
@@ -2261,10 +2261,10 @@ List MinusDM(List inHigh, List inLow, int inTimePeriod) {
     i--;
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     if ((diffM > 0) && (diffP < diffM)) {
       prevMinusDM += diffM;
@@ -2275,10 +2275,10 @@ List MinusDM(List inHigh, List inLow, int inTimePeriod) {
     i--;
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     if ((diffM > 0) && (diffP < diffM)) {
       prevMinusDM = prevMinusDM - (prevMinusDM / inTimePeriod) + diffM;
@@ -2291,10 +2291,10 @@ List MinusDM(List inHigh, List inLow, int inTimePeriod) {
   for (; today < inHigh.length - 1;) {
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     if ((diffM > 0) && (diffP < diffM)) {
       prevMinusDM = prevMinusDM - (prevMinusDM / inTimePeriod) + diffM;
@@ -2309,13 +2309,13 @@ List MinusDM(List inHigh, List inLow, int inTimePeriod) {
 
 List Mfi(
     List inHigh, List inLow, List inClose, List inVolume, int inTimePeriod) {
-  var outReal = new List(inClose.length);
+  final outReal = List(inClose.length);
   var mflowIdx = 0;
   var maxIdxMflow = (50 - 1);
-  var mflow = new List(inTimePeriod);
+  final mflow = List(inTimePeriod);
   maxIdxMflow = inTimePeriod - 1;
-  var lookbackTotal = inTimePeriod;
-  var startIdx = lookbackTotal;
+  final lookbackTotal = inTimePeriod;
+  final startIdx = lookbackTotal;
   var outIdx = startIdx;
   var today = startIdx - lookbackTotal;
   var prevValue = (inHigh.elementAt(today) +
@@ -2330,7 +2330,7 @@ List Mfi(
             inLow.elementAt(today) +
             inClose.elementAt(today)) /
         3.0;
-    var tempValue2 = tempValue1 - prevValue;
+    final tempValue2 = tempValue1 - prevValue;
     prevValue = tempValue1;
     tempValue1 *= inVolume.elementAt(today);
     today++;
@@ -2353,7 +2353,7 @@ List Mfi(
     }
   }
   if (today > startIdx) {
-    var tempValue1 = posSumMF + negSumMF;
+    final tempValue1 = posSumMF + negSumMF;
     if (tempValue1 < 1.0) {
     } else {
       outReal[outIdx] = 100.0 * (posSumMF / tempValue1);
@@ -2367,7 +2367,7 @@ List Mfi(
               inLow.elementAt(today) +
               inClose.elementAt(today)) /
           3.0;
-      var tempValue2 = tempValue1 - prevValue;
+      final tempValue2 = tempValue1 - prevValue;
       prevValue = tempValue1;
       tempValue1 *= inVolume.elementAt(today);
       today++;
@@ -2397,7 +2397,7 @@ List Mfi(
             inLow.elementAt(today) +
             inClose.elementAt(today)) /
         3.0;
-    var tempValue2 = tempValue1 - prevValue;
+    final tempValue2 = tempValue1 - prevValue;
     prevValue = tempValue1;
     tempValue1 *= inVolume.elementAt(today);
     today++;
@@ -2430,7 +2430,7 @@ List Mfi(
 }
 
 List Mom(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   var inIdx = inTimePeriod;
   var outIdx = inTimePeriod;
   var trailingIdx = 0;
@@ -2444,13 +2444,13 @@ List Mom(List inReal, int inTimePeriod) {
 }
 
 List PlusDI(List inHigh, List inLow, List inClose, int inTimePeriod) {
-  var outReal = new List(inClose.length);
+  final outReal = List(inClose.length);
   var lookbackTotal = 1;
   if (inTimePeriod > 1) {
     lookbackTotal = inTimePeriod;
   }
 
-  var startIdx = lookbackTotal;
+  final startIdx = lookbackTotal;
   var outIdx = startIdx;
   var prevHigh = 0.0;
   var prevLow = 0.0;
@@ -2463,10 +2463,10 @@ List PlusDI(List inHigh, List inLow, List inClose, int inTimePeriod) {
     for (; today < inClose.length - 1;) {
       today++;
       var tempReal = inHigh.elementAt(today);
-      var diffP = tempReal - prevHigh;
+      final diffP = tempReal - prevHigh;
       prevHigh = tempReal;
       tempReal = inLow.elementAt(today);
-      var diffM = prevLow - tempReal;
+      final diffM = prevLow - tempReal;
       prevLow = tempReal;
       if ((diffP > 0) && (diffP > diffM)) {
         tempReal = prevHigh - prevLow;
@@ -2507,10 +2507,10 @@ List PlusDI(List inHigh, List inLow, List inClose, int inTimePeriod) {
     i--;
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     if ((diffP > 0) && (diffP > diffM)) {
       prevPlusDM += diffP;
@@ -2535,10 +2535,10 @@ List PlusDI(List inHigh, List inLow, List inClose, int inTimePeriod) {
     i--;
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     if ((diffP > 0) && (diffP > diffM)) {
       prevPlusDM = prevPlusDM - (prevPlusDM / inTimePeriod) + diffP;
@@ -2568,10 +2568,10 @@ List PlusDI(List inHigh, List inLow, List inClose, int inTimePeriod) {
   for (; today < inClose.length - 1;) {
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     if ((diffP > 0) && (diffP > diffM)) {
       prevPlusDM = prevPlusDM - (prevPlusDM / inTimePeriod) + diffP;
@@ -2602,13 +2602,13 @@ List PlusDI(List inHigh, List inLow, List inClose, int inTimePeriod) {
 }
 
 List PlusDM(List inHigh, List inLow, int inTimePeriod) {
-  var outReal = new List(inHigh.length);
+  final outReal = List(inHigh.length);
   var lookbackTotal = 1;
   if (inTimePeriod > 1) {
     lookbackTotal = inTimePeriod - 1;
   }
 
-  var startIdx = lookbackTotal;
+  final startIdx = lookbackTotal;
   var outIdx = startIdx;
   var today = startIdx;
   var prevHigh = 0.0;
@@ -2620,10 +2620,10 @@ List PlusDM(List inHigh, List inLow, int inTimePeriod) {
     for (; today < inHigh.length - 1;) {
       today++;
       var tempReal = inHigh.elementAt(today);
-      var diffP = tempReal - prevHigh;
+      final diffP = tempReal - prevHigh;
       prevHigh = tempReal;
       tempReal = inLow.elementAt(today);
-      var diffM = prevLow - tempReal;
+      final diffM = prevLow - tempReal;
       prevLow = tempReal;
       if ((diffP > 0) && (diffP > diffM)) {
         outReal[outIdx] = diffP;
@@ -2644,10 +2644,10 @@ List PlusDM(List inHigh, List inLow, int inTimePeriod) {
     i--;
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     if ((diffP > 0) && (diffP > diffM)) {
       prevPlusDM += diffP;
@@ -2658,10 +2658,10 @@ List PlusDM(List inHigh, List inLow, int inTimePeriod) {
     i--;
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     if ((diffP > 0) && (diffP > diffM)) {
       prevPlusDM = prevPlusDM - (prevPlusDM / inTimePeriod) + diffP;
@@ -2674,10 +2674,10 @@ List PlusDM(List inHigh, List inLow, int inTimePeriod) {
   for (; today < inHigh.length - 1;) {
     today++;
     var tempReal = inHigh.elementAt(today);
-    var diffP = tempReal - prevHigh;
+    final diffP = tempReal - prevHigh;
     prevHigh = tempReal;
     tempReal = inLow.elementAt(today);
-    var diffM = prevLow - tempReal;
+    final diffM = prevLow - tempReal;
     prevLow = tempReal;
     if ((diffP > 0) && (diffP > diffM)) {
       prevPlusDM = prevPlusDM - (prevPlusDM / inTimePeriod) + diffP;
@@ -2696,10 +2696,10 @@ List Ppo(List inReal, int inFastPeriod, int inSlowPeriod, MaType inMAType) {
     inFastPeriod = inSlowPeriod;
   }
 
-  var tempBuffer = Ma(inReal, inFastPeriod, inMAType);
-  var outReal = Ma(inReal, inSlowPeriod, inMAType);
+  final tempBuffer = Ma(inReal, inFastPeriod, inMAType);
+  final outReal = Ma(inReal, inSlowPeriod, inMAType);
   for (var i = inSlowPeriod - 1; i < inReal.length; i++) {
-    var tempReal = outReal.elementAt(i);
+    final tempReal = outReal.elementAt(i);
     if (!(((-(0.00000000000001)) < tempReal) &&
         (tempReal < (0.00000000000001)))) {
       outReal[i] = ((tempBuffer.elementAt(i) - tempReal) / tempReal) * 100.0;
@@ -2711,17 +2711,17 @@ List Ppo(List inReal, int inFastPeriod, int inSlowPeriod, MaType inMAType) {
 }
 
 List Rocp(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   if (inTimePeriod < 1) {
     return outReal;
   }
 
-  var startIdx = inTimePeriod;
+  final startIdx = inTimePeriod;
   var outIdx = startIdx;
   var inIdx = startIdx;
   var trailingIdx = startIdx - inTimePeriod;
   for (; inIdx < outReal.length;) {
-    var tempReal = inReal.elementAt(trailingIdx);
+    final tempReal = inReal.elementAt(trailingIdx);
     if (tempReal != 0.0) {
       outReal[outIdx] = (inReal.elementAt(inIdx) - tempReal) / tempReal;
     } else {
@@ -2735,13 +2735,13 @@ List Rocp(List inReal, int inTimePeriod) {
 }
 
 List Roc(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var startIdx = inTimePeriod;
+  final outReal = List(inReal.length);
+  final startIdx = inTimePeriod;
   var outIdx = inTimePeriod;
   var inIdx = startIdx;
   var trailingIdx = startIdx - inTimePeriod;
   for (; inIdx < inReal.length;) {
-    var tempReal = inReal.elementAt(trailingIdx);
+    final tempReal = inReal.elementAt(trailingIdx);
     if (tempReal != 0.0) {
       outReal[outIdx] = ((inReal.elementAt(inIdx) / tempReal) - 1.0) * 100.0;
     } else {
@@ -2755,13 +2755,13 @@ List Roc(List inReal, int inTimePeriod) {
 }
 
 List Rocr(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var startIdx = inTimePeriod;
+  final outReal = List(inReal.length);
+  final startIdx = inTimePeriod;
   var outIdx = inTimePeriod;
   var inIdx = startIdx;
   var trailingIdx = startIdx - inTimePeriod;
   for (; inIdx < inReal.length;) {
-    var tempReal = inReal.elementAt(trailingIdx);
+    final tempReal = inReal.elementAt(trailingIdx);
     if (tempReal != 0.0) {
       outReal[outIdx] = (inReal.elementAt(inIdx) / tempReal);
     } else {
@@ -2775,13 +2775,13 @@ List Rocr(List inReal, int inTimePeriod) {
 }
 
 List Rocr100(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var startIdx = inTimePeriod;
+  final outReal = List(inReal.length);
+  final startIdx = inTimePeriod;
   var outIdx = inTimePeriod;
   var inIdx = startIdx;
   var trailingIdx = startIdx - inTimePeriod;
   for (; inIdx < inReal.length;) {
-    var tempReal = inReal.elementAt(trailingIdx);
+    final tempReal = inReal.elementAt(trailingIdx);
     if (tempReal != 0.0) {
       outReal[outIdx] = (inReal.elementAt(inIdx) / tempReal) * 100.0;
     } else {
@@ -2795,7 +2795,7 @@ List Rocr100(List inReal, int inTimePeriod) {
 }
 
 List Rsi(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   if (inTimePeriod < 2) {
     return outReal;
   }
@@ -2882,13 +2882,13 @@ List Stoch(
     MaType inSlowKMAType,
     int inSlowDPeriod,
     MaType inSlowDMAType) {
-  var outSlowK = new List(inClose.length);
-  var outSlowD = new List(inClose.length);
-  var lookbackK = inFastKPeriod - 1;
-  var lookbackKSlow = inSlowKPeriod - 1;
-  var lookbackDSlow = inSlowDPeriod - 1;
-  var lookbackTotal = lookbackK + lookbackDSlow + lookbackKSlow;
-  var startIdx = lookbackTotal;
+  final outSlowK = List(inClose.length);
+  final outSlowD = List(inClose.length);
+  final lookbackK = inFastKPeriod - 1;
+  final lookbackKSlow = inSlowKPeriod - 1;
+  final lookbackDSlow = inSlowDPeriod - 1;
+  final lookbackTotal = lookbackK + lookbackDSlow + lookbackKSlow;
+  final startIdx = lookbackTotal;
   var outIdx = 0;
   var trailingIdx = startIdx - lookbackTotal;
   var today = trailingIdx + lookbackK;
@@ -2897,7 +2897,7 @@ List Stoch(
   var diff = 0.0;
   var highest = 0.0;
   var lowest = 0.0;
-  var tempBuffer = new List(inClose.length - today + 1);
+  final tempBuffer = List(inClose.length - today + 1);
   for (; today < inClose.length;) {
     var tmp = inLow.elementAt(today);
     if (lowestIdx < trailingIdx) {
@@ -2905,7 +2905,7 @@ List Stoch(
       lowest = inLow.elementAt(lowestIdx);
       var i = lowestIdx + 1;
       for (; i <= today;) {
-        var tmp = inLow.elementAt(i);
+        final tmp = inLow.elementAt(i);
         if (tmp < lowest) {
           lowestIdx = i;
           lowest = tmp;
@@ -2926,7 +2926,7 @@ List Stoch(
       highest = inHigh.elementAt(highestIdx);
       var i = highestIdx + 1;
       for (; i <= today;) {
-        var tmp = inHigh.elementAt(i);
+        final tmp = inHigh.elementAt(i);
         if (tmp > highest) {
           highestIdx = i;
           highest = tmp;
@@ -2950,8 +2950,8 @@ List Stoch(
     trailingIdx++;
     today++;
   }
-  var tempBuffer1 = Ma(tempBuffer, inSlowKPeriod, inSlowKMAType);
-  var tempBuffer2 = Ma(tempBuffer1, inSlowDPeriod, inSlowDMAType);
+  final tempBuffer1 = Ma(tempBuffer, inSlowKPeriod, inSlowKMAType);
+  final tempBuffer2 = Ma(tempBuffer1, inSlowDPeriod, inSlowDMAType);
 
   for (var i = lookbackDSlow + lookbackKSlow, j = lookbackTotal;
       j < inClose.length;
@@ -2965,12 +2965,12 @@ List Stoch(
 
 List StochF(List inHigh, List inLow, List inClose, int inFastKPeriod,
     int inFastDPeriod, MaType inFastDMAType) {
-  var outFastK = new List(inClose.length);
-  var outFastD = new List(inClose.length);
-  var lookbackK = inFastKPeriod - 1;
-  var lookbackFastD = inFastDPeriod - 1;
-  var lookbackTotal = lookbackK + lookbackFastD;
-  var startIdx = lookbackTotal;
+  final outFastK = List(inClose.length);
+  final outFastD = List(inClose.length);
+  final lookbackK = inFastKPeriod - 1;
+  final lookbackFastD = inFastDPeriod - 1;
+  final lookbackTotal = lookbackK + lookbackFastD;
+  final startIdx = lookbackTotal;
   var outIdx = 0;
   var trailingIdx = startIdx - lookbackTotal;
   var today = trailingIdx + lookbackK;
@@ -2979,7 +2979,7 @@ List StochF(List inHigh, List inLow, List inClose, int inFastKPeriod,
   var diff = 0.0;
   var highest = 0.0;
   var lowest = 0.0;
-  var tempBuffer = new List((inClose.length - today + 1));
+  final tempBuffer = List((inClose.length - today + 1));
   for (; today < inClose.length;) {
     var tmp = inLow.elementAt(today);
     if (lowestIdx < trailingIdx) {
@@ -3034,7 +3034,7 @@ List StochF(List inHigh, List inLow, List inClose, int inFastKPeriod,
     trailingIdx++;
     today++;
   }
-  var tempBuffer1 = Ma(tempBuffer, inFastDPeriod, inFastDMAType);
+  final tempBuffer1 = Ma(tempBuffer, inFastDPeriod, inFastDMAType);
   for (var i = lookbackFastD, j = lookbackTotal;
       j < inClose.length;
       i = i + 1, j = j + 1) {
@@ -3046,17 +3046,17 @@ List StochF(List inHigh, List inLow, List inClose, int inFastKPeriod,
 
 List StochRsi(List inReal, int inTimePeriod, int inFastKPeriod,
     int inFastDPeriod, MaType inFastDMAType) {
-  var outFastK = new List(inReal.length);
-  var outFastD = new List(inReal.length);
-  var lookbackSTOCHF = (inFastKPeriod - 1) + (inFastDPeriod - 1);
-  var lookbackTotal = inTimePeriod + lookbackSTOCHF;
-  var startIdx = lookbackTotal;
-  var tempRSIBuffer = Rsi(inReal, inTimePeriod);
-  var tmpList = StochF(tempRSIBuffer, tempRSIBuffer, tempRSIBuffer,
+  final outFastK = List(inReal.length);
+  final outFastD = List(inReal.length);
+  final lookbackSTOCHF = (inFastKPeriod - 1) + (inFastDPeriod - 1);
+  final lookbackTotal = inTimePeriod + lookbackSTOCHF;
+  final startIdx = lookbackTotal;
+  final tempRSIBuffer = Rsi(inReal, inTimePeriod);
+  final tmpList = StochF(tempRSIBuffer, tempRSIBuffer, tempRSIBuffer,
       inFastKPeriod, inFastDPeriod, inFastDMAType);
-  var tempk = tmpList[0];
-  var tempd = tmpList[1];
-  ;
+  final tempk = tmpList[0];
+  final tempd = tmpList[1];
+
   for (var i = startIdx; i < inReal.length; i++) {
     outFastK[i] = tempk.elementAt(i);
     outFastD[i] = tempd.elementAt(i);
@@ -3077,7 +3077,7 @@ List Trix(List inReal, int inTimePeriod) {
       ),
       inTimePeriod);
   tmpReal = Roc(tmpReal, 1);
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
 
   for (var i = inTimePeriod, j = ((inTimePeriod - 1) * 3) + 1;
       j < outReal.length;
@@ -3089,10 +3089,10 @@ List Trix(List inReal, int inTimePeriod) {
 
 List UltOsc(List inHigh, List inLow, List inClose, int inTimePeriod1,
     int inTimePeriod2, int inTimePeriod3) {
-  var outReal = new List(inClose.length);
-  var usedFlag = new List(3);
-  var periods = new List(3);
-  var sortedPeriods = new List(3);
+  final outReal = List(inClose.length);
+  final usedFlag = List(3);
+  final periods = List(3);
+  final sortedPeriods = List(3);
   periods[0] = inTimePeriod1;
   periods[1] = inTimePeriod2;
   periods[2] = inTimePeriod3;
@@ -3122,20 +3122,20 @@ List UltOsc(List inHigh, List inLow, List inClose, int inTimePeriod1,
   }
 
   lookbackTotal++;
-  var startIdx = lookbackTotal - 1;
+  final startIdx = lookbackTotal - 1;
   var a1Total = 0.0;
   var b1Total = 0.0;
   for (var i = startIdx - inTimePeriod1 + 1; i < startIdx; i++) {
-    var tempLT = inLow.elementAt(i);
-    var tempHT = inHigh.elementAt(i);
-    var tempCY = inClose.elementAt(i - 1);
+    final tempLT = inLow.elementAt(i);
+    final tempHT = inHigh.elementAt(i);
+    final tempCY = inClose.elementAt(i - 1);
     var trueLow = 0.0;
     if (tempLT < tempCY) {
       trueLow = tempLT;
     } else {
       trueLow = tempCY;
     }
-    var closeMinusTrueLow = inClose.elementAt(i) - trueLow;
+    final closeMinusTrueLow = inClose.elementAt(i) - trueLow;
     var trueRange = tempHT - tempLT;
     var tempDouble = (tempCY - tempHT).abs();
     if (tempDouble > trueRange) {
@@ -3153,16 +3153,16 @@ List UltOsc(List inHigh, List inLow, List inClose, int inTimePeriod1,
   var a2Total = 0.0;
   var b2Total = 0.0;
   for (var i = startIdx - inTimePeriod2 + 1; i < startIdx; i++) {
-    var tempLT = inLow.elementAt(i);
-    var tempHT = inHigh.elementAt(i);
-    var tempCY = inClose.elementAt(i - 1);
+    final tempLT = inLow.elementAt(i);
+    final tempHT = inHigh.elementAt(i);
+    final tempCY = inClose.elementAt(i - 1);
     var trueLow = 0.0;
     if (tempLT < tempCY) {
       trueLow = tempLT;
     } else {
       trueLow = tempCY;
     }
-    var closeMinusTrueLow = inClose.elementAt(i) - trueLow;
+    final closeMinusTrueLow = inClose.elementAt(i) - trueLow;
     var trueRange = tempHT - tempLT;
     var tempDouble = (tempCY - tempHT).abs();
     if (tempDouble > trueRange) {
@@ -3180,16 +3180,16 @@ List UltOsc(List inHigh, List inLow, List inClose, int inTimePeriod1,
   var a3Total = 0.0;
   var b3Total = 0.0;
   for (var i = startIdx - inTimePeriod3 + 1; i < startIdx; i++) {
-    var tempLT = inLow.elementAt(i);
-    var tempHT = inHigh.elementAt(i);
-    var tempCY = inClose.elementAt(i - 1);
+    final tempLT = inLow.elementAt(i);
+    final tempHT = inHigh.elementAt(i);
+    final tempCY = inClose.elementAt(i - 1);
     var trueLow = 0.0;
     if (tempLT < tempCY) {
       trueLow = tempLT;
     } else {
       trueLow = tempCY;
     }
-    var closeMinusTrueLow = inClose.elementAt(i) - trueLow;
+    final closeMinusTrueLow = inClose.elementAt(i) - trueLow;
     var trueRange = tempHT - tempLT;
     var tempDouble = (tempCY - tempHT).abs();
     if (tempDouble > trueRange) {
@@ -3333,11 +3333,11 @@ List UltOsc(List inHigh, List inLow, List inClose, int inTimePeriod1,
 }
 
 List WillR(List inHigh, List inLow, List inClose, int inTimePeriod) {
-  var outReal = new List(inClose.length);
-  var nbInitialElementNeeded = (inTimePeriod - 1);
+  final outReal = List(inClose.length);
+  final nbInitialElementNeeded = inTimePeriod - 1;
   var diff = 0.0;
   var outIdx = inTimePeriod - 1;
-  var startIdx = inTimePeriod - 1;
+  final startIdx = inTimePeriod - 1;
   var today = startIdx;
   var trailingIdx = startIdx - nbInitialElementNeeded;
   var highestIdx = -1;
@@ -3403,17 +3403,17 @@ List WillR(List inHigh, List inLow, List inClose, int inTimePeriod) {
 }
 
 List Ad(List inHigh, List inLow, List inClose, List inVolume) {
-  var outReal = new List(inClose.length);
-  var startIdx = 0;
+  final outReal = List(inClose.length);
+  const startIdx = 0;
   var nbBar = inClose.length - startIdx;
   var currentBar = startIdx;
   var outIdx = 0;
   var ad = 0.0;
   for (; nbBar != 0;) {
-    var high = inHigh.elementAt(currentBar);
-    var low = inLow.elementAt(currentBar);
-    var tmp = high - low;
-    var close = inClose.elementAt(currentBar);
+    final high = inHigh.elementAt(currentBar);
+    final low = inLow.elementAt(currentBar);
+    final tmp = high - low;
+    final close = inClose.elementAt(currentBar);
     if (tmp > 0.0) {
       ad += (((close - low) - (high - close)) / tmp) *
           (inVolume.elementAt(currentBar));
@@ -3429,7 +3429,7 @@ List Ad(List inHigh, List inLow, List inClose, List inVolume) {
 
 List AdOsc(List inHigh, List inLow, List inClose, List inVolume,
     int inFastPeriod, int inSlowPeriod) {
-  var outReal = new List(inClose.length);
+  final outReal = List(inClose.length);
   if ((inFastPeriod < 2) || (inSlowPeriod < 2)) {
     return outReal;
   }
@@ -3440,14 +3440,14 @@ List AdOsc(List inHigh, List inLow, List inClose, List inVolume,
   } else {
     slowestPeriod = inFastPeriod;
   }
-  var lookbackTotal = slowestPeriod - 1;
-  var startIdx = lookbackTotal;
+  final lookbackTotal = slowestPeriod - 1;
+  final startIdx = lookbackTotal;
   var today = startIdx - lookbackTotal;
   var ad = 0.0;
-  var fastk = (2.0 / (inFastPeriod + 1.0));
-  var oneMinusfastk = 1.0 - fastk;
-  var slowk = (2.0 / (inSlowPeriod + 1.0));
-  var oneMinusslowk = 1.0 - slowk;
+  final fastk = 2.0 / (inFastPeriod + 1.0);
+  final oneMinusfastk = 1.0 - fastk;
+  final slowk = 2.0 / (inSlowPeriod + 1.0);
+  final oneMinusslowk = 1.0 - slowk;
   var high = inHigh.elementAt(today);
   var low = inLow.elementAt(today);
   var tmp = high - low;
@@ -3495,13 +3495,13 @@ List AdOsc(List inHigh, List inLow, List inClose, List inVolume,
 }
 
 List Obv(List inReal, List inVolume) {
-  var outReal = new List(inReal.length);
-  var startIdx = 0;
+  final outReal = List(inReal.length);
+  const startIdx = 0;
   var prevOBV = inVolume.elementAt(startIdx);
   var prevReal = inReal.elementAt(startIdx);
   var outIdx = 0;
   for (var i = startIdx; i < inReal.length; i++) {
-    var tempReal = inReal.elementAt(i);
+    final tempReal = inReal.elementAt(i);
     if (tempReal > prevReal) {
       prevOBV += inVolume.elementAt(i);
     } else if (tempReal < prevReal) {
@@ -3516,8 +3516,8 @@ List Obv(List inReal, List inVolume) {
 }
 
 List Atr(List inHigh, List inLow, List inClose, int inTimePeriod) {
-  var outReal = new List(inClose.length);
-  var inTimePeriodF = inTimePeriod;
+  final outReal = List(inClose.length);
+  final inTimePeriodF = inTimePeriod;
   if (inTimePeriod < 1) {
     return outReal;
   }
@@ -3528,8 +3528,8 @@ List Atr(List inHigh, List inLow, List inClose, int inTimePeriod) {
 
   var outIdx = inTimePeriod;
   var today = inTimePeriod + 1;
-  var tr = TRange(inHigh, inLow, inClose);
-  var prevATRTemp = Sma(tr, inTimePeriod);
+  final tr = TRange(inHigh, inLow, inClose);
+  final prevATRTemp = Sma(tr, inTimePeriod);
   var prevATR = prevATRTemp.elementAt(inTimePeriod);
   outReal[inTimePeriod] = prevATR;
   for (outIdx = inTimePeriod + 1; outIdx < inClose.length; outIdx++) {
@@ -3543,7 +3543,7 @@ List Atr(List inHigh, List inLow, List inClose, int inTimePeriod) {
 }
 
 List Natr(List inHigh, List inLow, List inClose, int inTimePeriod) {
-  var outReal = new List(inClose.length);
+  final outReal = List(inClose.length);
   if (inTimePeriod < 1) {
     return outReal;
   }
@@ -3552,11 +3552,11 @@ List Natr(List inHigh, List inLow, List inClose, int inTimePeriod) {
     return TRange(inHigh, inLow, inClose);
   }
 
-  var inTimePeriodF = inTimePeriod;
+  final inTimePeriodF = inTimePeriod;
   var outIdx = inTimePeriod;
   var today = inTimePeriod;
-  var tr = TRange(inHigh, inLow, inClose);
-  var prevATRTemp = Sma(tr, inTimePeriod);
+  final tr = TRange(inHigh, inLow, inClose);
+  final prevATRTemp = Sma(tr, inTimePeriod);
   var prevATR = prevATRTemp.elementAt(inTimePeriod);
   var tempValue = inClose.elementAt(today);
   if (tempValue != 0.0) {
@@ -3580,21 +3580,21 @@ List Natr(List inHigh, List inLow, List inClose, int inTimePeriod) {
 }
 
 List TRange(List inHigh, List inLow, List inClose) {
-  var outReal = new List(inClose.length);
-  var startIdx = 1;
+  final outReal = List(inClose.length);
+  const startIdx = 1;
   var outIdx = startIdx;
   var today = startIdx;
   for (; today < inClose.length;) {
-    var tempLT = inLow.elementAt(today);
-    var tempHT = inHigh.elementAt(today);
-    var tempCY = inClose.elementAt(today - 1);
+    final tempLT = inLow.elementAt(today);
+    final tempHT = inHigh.elementAt(today);
+    final tempCY = inClose.elementAt(today - 1);
     var greatest = tempHT - tempLT;
-    var val2 = (tempCY - tempHT).abs();
+    final val2 = (tempCY - tempHT).abs();
     if (val2 > greatest) {
       greatest = val2;
     }
 
-    var val3 = (tempCY - tempLT).abs();
+    final val3 = (tempCY - tempLT).abs();
     if (val3 > greatest) {
       greatest = val3;
     }
@@ -3607,9 +3607,9 @@ List TRange(List inHigh, List inLow, List inClose) {
 }
 
 List AvgPrice(List inOpen, List inHigh, List inLow, List inClose) {
-  var outReal = new List(inClose.length);
+  final outReal = List(inClose.length);
   var outIdx = 0;
-  var startIdx = 0;
+  const startIdx = 0;
   for (var i = startIdx; i < inClose.length; i++) {
     outReal[outIdx] = (inHigh.elementAt(i) +
             inLow.elementAt(i) +
@@ -3622,9 +3622,9 @@ List AvgPrice(List inOpen, List inHigh, List inLow, List inClose) {
 }
 
 List MedPrice(List inHigh, List inLow) {
-  var outReal = new List(inHigh.length);
+  final outReal = List(inHigh.length);
   var outIdx = 0;
-  var startIdx = 0;
+  const startIdx = 0;
   for (var i = startIdx; i < inHigh.length; i++) {
     outReal[outIdx] = (inHigh.elementAt(i) + inLow.elementAt(i)) / 2.0;
     outIdx++;
@@ -3633,9 +3633,9 @@ List MedPrice(List inHigh, List inLow) {
 }
 
 List TypPrice(List inHigh, List inLow, List inClose) {
-  var outReal = new List(inClose.length);
+  final outReal = List(inClose.length);
   var outIdx = 0;
-  var startIdx = 0;
+  const startIdx = 0;
   for (var i = startIdx; i < inClose.length; i++) {
     outReal[outIdx] =
         (inHigh.elementAt(i) + inLow.elementAt(i) + inClose.elementAt(i)) / 3.0;
@@ -3645,9 +3645,9 @@ List TypPrice(List inHigh, List inLow, List inClose) {
 }
 
 List WclPrice(List inHigh, List inLow, List inClose) {
-  var outReal = new List(inClose.length);
+  final outReal = List(inClose.length);
   var outIdx = 0;
-  var startIdx = 0;
+  const startIdx = 0;
   for (var i = startIdx; i < inClose.length; i++) {
     outReal[outIdx] = (inHigh.elementAt(i) +
             inLow.elementAt(i) +
@@ -3659,20 +3659,20 @@ List WclPrice(List inHigh, List inLow, List inClose) {
 }
 
 List HtDcPeriod(List inReal) {
-  var outReal = new List(inReal.length);
-  var a = 0.0962;
-  var b = 0.5769;
-  var detrenderOdd = new List(3);
-  var detrenderEven = new List(3);
-  var q1Odd = new List(3);
-  var q1Even = new List(3);
-  var jIOdd = new List(3);
-  var jIEven = new List(3);
-  var jQOdd = new List(3);
-  var jQEven = new List(3);
-  var rad2Deg = 180.0 / (4.0 * math.atan(1));
-  var lookbackTotal = 32;
-  var startIdx = lookbackTotal;
+  final outReal = List(inReal.length);
+  const a = 0.0962;
+  const b = 0.5769;
+  final detrenderOdd = List(3);
+  final detrenderEven = List(3);
+  final q1Odd = List(3);
+  final q1Even = List(3);
+  final jIOdd = List(3);
+  final jIEven = List(3);
+  final jQOdd = List(3);
+  final jQEven = List(3);
+  final rad2Deg = 180.0 / (4.0 * math.atan(1));
+  const lookbackTotal = 32;
+  const startIdx = lookbackTotal;
   var trailingWMAIdx = startIdx - lookbackTotal;
   var today = trailingWMAIdx;
   var tempReal = inReal.elementAt(today);
@@ -3738,8 +3738,8 @@ List HtDcPeriod(List inReal) {
   var i1ForEvenPrev2 = 0.0;
   var smoothPeriod = 0.0;
   for (; today < inReal.length;) {
-    var adjustedPrevPeriod = (0.075 * period) + 0.54;
-    var todayValue = inReal.elementAt(today);
+    final adjustedPrevPeriod = (0.075 * period) + 0.54;
+    final todayValue = inReal.elementAt(today);
     periodWMASub += todayValue;
     periodWMASub -= trailingWMAValue;
     periodWMASum += todayValue * 4.0;
@@ -3874,25 +3874,25 @@ List HtDcPeriod(List inReal) {
 }
 
 List HtDcPhase(List inReal) {
-  var outReal = new List(inReal.length);
-  var a = 0.0962;
-  var b = 0.5769;
-  var detrenderOdd = new List(3);
-  var detrenderEven = new List(3);
-  var q1Odd = new List(3);
-  var q1Even = new List(3);
-  var jIOdd = new List(3);
-  var jIEven = new List(3);
-  var jQOdd = new List(3);
-  var jQEven = new List(3);
+  final outReal = List(inReal.length);
+  const a = 0.0962;
+  const b = 0.5769;
+  final detrenderOdd = List(3);
+  final detrenderEven = List(3);
+  final q1Odd = List(3);
+  final q1Even = List(3);
+  final jIOdd = List(3);
+  final jIEven = List(3);
+  final jQOdd = List(3);
+  final jQEven = List(3);
   var smoothPriceIdx = 0;
-  var maxIdxSmoothPrice = (50 - 1);
-  var smoothPrice = new List(maxIdxSmoothPrice + 1);
+  const maxIdxSmoothPrice = 50 - 1;
+  final smoothPrice = List(maxIdxSmoothPrice + 1);
   var tempReal = math.atan(1);
-  var rad2Deg = 45.0 / tempReal;
-  var constDeg2RadBy360 = tempReal * 8.0;
-  var lookbackTotal = 63;
-  var startIdx = lookbackTotal;
+  final rad2Deg = 45.0 / tempReal;
+  final constDeg2RadBy360 = tempReal * 8.0;
+  const lookbackTotal = 63;
+  const startIdx = lookbackTotal;
   var trailingWMAIdx = startIdx - lookbackTotal;
   var today = trailingWMAIdx;
   tempReal = inReal.elementAt(today);
@@ -3959,8 +3959,8 @@ List HtDcPhase(List inReal) {
   var q2 = 0.0;
   var i2 = 0.0;
   for (; today < inReal.length;) {
-    var adjustedPrevPeriod = (0.075 * period) + 0.54;
-    var todayValue = inReal.elementAt(today);
+    final adjustedPrevPeriod = (0.075 * period) + 0.54;
+    final todayValue = inReal.elementAt(today);
     periodWMASub += todayValue;
     periodWMASub -= trailingWMAValue;
     periodWMASum += todayValue * 4.0;
@@ -4085,8 +4085,8 @@ List HtDcPhase(List inReal) {
 
     period = (0.2 * period) + (0.8 * tempReal);
     smoothPeriod = (0.33 * period) + (0.67 * smoothPeriod);
-    var DCPeriod = smoothPeriod + 0.5;
-    var DCPeriodInt = DCPeriod.floor();
+    final DCPeriod = smoothPeriod + 0.5;
+    final DCPeriodInt = DCPeriod.floor();
     var realPart = 0.0;
     var imagPart = 0.0;
     var idx = smoothPriceIdx;
@@ -4138,21 +4138,21 @@ List HtDcPhase(List inReal) {
 }
 
 List HtPhasor(List inReal) {
-  var outInPhase = new List(inReal.length);
-  var outQuadrature = new List(inReal.length);
-  var a = 0.0962;
-  var b = 0.5769;
-  var detrenderOdd = new List(3);
-  var detrenderEven = new List(3);
-  var q1Odd = new List(3);
-  var q1Even = new List(3);
-  var jIOdd = new List(3);
-  var jIEven = new List(3);
-  var jQOdd = new List(3);
-  var jQEven = new List(3);
-  var rad2Deg = 180.0 / (4.0 * math.atan(1));
-  var lookbackTotal = 32;
-  var startIdx = lookbackTotal;
+  final outInPhase = List(inReal.length);
+  final outQuadrature = List(inReal.length);
+  const a = 0.0962;
+  const b = 0.5769;
+  final detrenderOdd = List(3);
+  final detrenderEven = List(3);
+  final q1Odd = List(3);
+  final q1Even = List(3);
+  final jIOdd = List(3);
+  final jIEven = List(3);
+  final jQOdd = List(3);
+  final jQEven = List(3);
+  final rad2Deg = 180.0 / (4.0 * math.atan(1));
+  const lookbackTotal = 32;
+  const startIdx = lookbackTotal;
   var trailingWMAIdx = startIdx - lookbackTotal;
   var today = trailingWMAIdx;
   var tempReal = inReal.elementAt(today);
@@ -4217,8 +4217,8 @@ List HtPhasor(List inReal) {
   var i2 = 0.0;
   var q2 = 0.0;
   for (; today < inReal.length;) {
-    var adjustedPrevPeriod = (0.075 * period) + 0.54;
-    var todayValue = inReal.elementAt(today);
+    final adjustedPrevPeriod = (0.075 * period) + 0.54;
+    final todayValue = inReal.elementAt(today);
     periodWMASub += todayValue;
     periodWMASub -= trailingWMAValue;
     periodWMASum += todayValue * 4.0;
@@ -4359,27 +4359,27 @@ List HtPhasor(List inReal) {
 }
 
 List HtSine(List inReal) {
-  var outSine = new List(inReal.length);
-  var outLeadSine = new List(inReal.length);
-  var a = 0.0962;
-  var b = 0.5769;
-  var detrenderOdd = new List(3);
-  var detrenderEven = new List(3);
-  var q1Odd = new List(3);
-  var q1Even = new List(3);
-  var jIOdd = new List(3);
-  var jIEven = new List(3);
-  var jQOdd = new List(3);
-  var jQEven = new List(3);
+  final outSine = List(inReal.length);
+  final outLeadSine = List(inReal.length);
+  const a = 0.0962;
+  const b = 0.5769;
+  final detrenderOdd = List(3);
+  final detrenderEven = List(3);
+  final q1Odd = List(3);
+  final q1Even = List(3);
+  final jIOdd = List(3);
+  final jIEven = List(3);
+  final jQOdd = List(3);
+  final jQEven = List(3);
   var smoothPriceIdx = 0;
-  var maxIdxSmoothPrice = (50 - 1);
-  var smoothPrice = new List(maxIdxSmoothPrice + 1);
+  const maxIdxSmoothPrice = 50 - 1;
+  final smoothPrice = List(maxIdxSmoothPrice + 1);
   var tempReal = math.atan(1);
-  var rad2Deg = 45.0 / tempReal;
-  var deg2Rad = 1.0 / rad2Deg;
-  var constDeg2RadBy360 = tempReal * 8.0;
-  var lookbackTotal = 63;
-  var startIdx = lookbackTotal;
+  final rad2Deg = 45.0 / tempReal;
+  final deg2Rad = 1.0 / rad2Deg;
+  final constDeg2RadBy360 = tempReal * 8.0;
+  const lookbackTotal = 63;
+  const startIdx = lookbackTotal;
   var trailingWMAIdx = startIdx - lookbackTotal;
   var today = trailingWMAIdx;
   tempReal = inReal.elementAt(today);
@@ -4447,8 +4447,8 @@ List HtSine(List inReal) {
   var q2 = 0.0;
   var i2 = 0.0;
   for (; today < inReal.length;) {
-    var adjustedPrevPeriod = (0.075 * period) + 0.54;
-    var todayValue = inReal.elementAt(today);
+    final adjustedPrevPeriod = (0.075 * period) + 0.54;
+    final todayValue = inReal.elementAt(today);
     periodWMASub += todayValue;
     periodWMASub -= trailingWMAValue;
     periodWMASum += todayValue * 4.0;
@@ -4572,8 +4572,8 @@ List HtSine(List inReal) {
 
     period = (0.2 * period) + (0.8 * tempReal);
     smoothPeriod = (0.33 * period) + (0.67 * smoothPeriod);
-    var DCPeriod = smoothPeriod + 0.5;
-    var DCPeriodInt = DCPeriod.floor();
+    final DCPeriod = smoothPeriod + 0.5;
+    final DCPeriodInt = DCPeriod.floor();
     var realPart = 0.0;
     var imagPart = 0.0;
     var idx = smoothPriceIdx;
@@ -4626,20 +4626,20 @@ List HtSine(List inReal) {
 }
 
 List HtTrendMode(List inReal) {
-  var outReal = new List(inReal.length);
-  var a = 0.0962;
-  var b = 0.5769;
-  var detrenderOdd = new List(3);
-  var detrenderEven = new List(3);
-  var q1Odd = new List(3);
-  var q1Even = new List(3);
-  var jIOdd = new List(3);
-  var jIEven = new List(3);
-  var jQOdd = new List(3);
-  var jQEven = new List(3);
+  final outReal = List(inReal.length);
+  const a = 0.0962;
+  const b = 0.5769;
+  final detrenderOdd = List(3);
+  final detrenderEven = List(3);
+  final q1Odd = List(3);
+  final q1Even = List(3);
+  final jIOdd = List(3);
+  final jIEven = List(3);
+  final jQOdd = List(3);
+  final jQEven = List(3);
   var smoothPriceIdx = 0;
-  var maxIdxSmoothPrice = (50 - 1);
-  var smoothPrice = new List(maxIdxSmoothPrice + 1);
+  const maxIdxSmoothPrice = 50 - 1;
+  final smoothPrice = List(maxIdxSmoothPrice + 1);
   var iTrend1 = 0.0;
   var iTrend2 = 0.0;
   var iTrend3 = 0.0;
@@ -4651,11 +4651,11 @@ List HtTrendMode(List inReal) {
   var prevLeadSine = 0.0;
   var leadSine = 0.0;
   var tempReal = math.atan(1);
-  var rad2Deg = 45.0 / tempReal;
-  var deg2Rad = 1.0 / rad2Deg;
-  var constDeg2RadBy360 = tempReal * 8.0;
-  var lookbackTotal = 63;
-  var startIdx = lookbackTotal;
+  final rad2Deg = 45.0 / tempReal;
+  final deg2Rad = 1.0 / rad2Deg;
+  final constDeg2RadBy360 = tempReal * 8.0;
+  const lookbackTotal = 63;
+  const startIdx = lookbackTotal;
   var trailingWMAIdx = startIdx - lookbackTotal;
   var today = trailingWMAIdx;
   tempReal = inReal.elementAt(today);
@@ -4722,8 +4722,8 @@ List HtTrendMode(List inReal) {
   var q2 = 0.0;
   var i2 = 0.0;
   for (; today < inReal.length;) {
-    var adjustedPrevPeriod = (0.075 * period) + 0.54;
-    var todayValue = inReal.elementAt(today);
+    final adjustedPrevPeriod = (0.075 * period) + 0.54;
+    final todayValue = inReal.elementAt(today);
     periodWMASub += todayValue;
     periodWMASub -= trailingWMAValue;
     periodWMASum += todayValue * 4.0;
@@ -4901,7 +4901,7 @@ List HtTrendMode(List inReal) {
       tempReal = tempReal / (DCPeriodInt * 1.0);
     }
 
-    var trendline =
+    final trendline =
         (4.0 * tempReal + 3.0 * iTrend1 + 2.0 * iTrend2 + iTrend3) / 10.0;
     iTrend3 = iTrend2;
     iTrend2 = iTrend1;
@@ -4947,7 +4947,7 @@ List HtTrendMode(List inReal) {
 }
 
 List Beta(List inReal0, List inReal1, int inTimePeriod) {
-  var outReal = new List(inReal0.length);
+  final outReal = List(inReal0.length);
   var x = 0.0;
   var y = 0.0;
   var sSS = 0.0;
@@ -4956,8 +4956,8 @@ List Beta(List inReal0, List inReal1, int inTimePeriod) {
   var sY = 0.0;
   var tmpReal = 0.0;
   var n = 0.0;
-  var nbInitialElementNeeded = inTimePeriod;
-  var startIdx = nbInitialElementNeeded;
+  final nbInitialElementNeeded = inTimePeriod;
+  final startIdx = nbInitialElementNeeded;
   var trailingIdx = startIdx - nbInitialElementNeeded;
   var trailingLastPriceX = inReal0.elementAt(trailingIdx);
   var lastPriceX = trailingLastPriceX;
@@ -5047,10 +5047,10 @@ List Beta(List inReal0, List inReal1, int inTimePeriod) {
 }
 
 List Correl(List inReal0, List inReal1, int inTimePeriod) {
-  var outReal = new List(inReal0.length);
-  var inTimePeriodF = inTimePeriod;
-  var lookbackTotal = inTimePeriod - 1;
-  var startIdx = lookbackTotal;
+  final outReal = List(inReal0.length);
+  final inTimePeriodF = inTimePeriod;
+  final lookbackTotal = inTimePeriod - 1;
+  final startIdx = lookbackTotal;
   var trailingIdx = startIdx - lookbackTotal;
   var sumXY = 0.0;
   var sumX = 0.0;
@@ -5059,10 +5059,10 @@ List Correl(List inReal0, List inReal1, int inTimePeriod) {
   var sumY2 = 0.0;
   var today = trailingIdx;
   for (today = trailingIdx; today <= startIdx; today++) {
-    var x = inReal0.elementAt(today);
+    final x = inReal0.elementAt(today);
     sumX += x;
     sumX2 += x * x;
-    var y = inReal1.elementAt(today);
+    final y = inReal1.elementAt(today);
     sumXY += x * y;
     sumY += y;
     sumY2 += y * y;
@@ -5085,10 +5085,10 @@ List Correl(List inReal0, List inReal1, int inTimePeriod) {
     sumXY -= trailingX * trailingY;
     sumY -= trailingY;
     sumY2 -= trailingY * trailingY;
-    var x = inReal0.elementAt(today);
+    final x = inReal0.elementAt(today);
     sumX += x;
     sumX2 += x * x;
-    var y = inReal1.elementAt(today);
+    final y = inReal1.elementAt(today);
     today++;
     sumXY += x * y;
     sumY += y;
@@ -5110,34 +5110,34 @@ List Correl(List inReal0, List inReal1, int inTimePeriod) {
 }
 
 List LinearReg(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var inTimePeriodF = inTimePeriod;
-  var lookbackTotal = inTimePeriod;
-  var startIdx = lookbackTotal;
+  final outReal = List(inReal.length);
+  final inTimePeriodF = inTimePeriod;
+  final lookbackTotal = inTimePeriod;
+  final startIdx = lookbackTotal;
   var outIdx = startIdx - 1;
   var today = startIdx - 1;
-  var sumX = inTimePeriodF * (inTimePeriodF - 1) * 0.5;
-  var sumXSqr =
+  final sumX = inTimePeriodF * (inTimePeriodF - 1) * 0.5;
+  final sumXSqr =
       inTimePeriodF * (inTimePeriodF - 1) * (2 * inTimePeriodF - 1) / 6;
-  var divisor = sumX * sumX - inTimePeriodF * sumXSqr;
+  final divisor = sumX * sumX - inTimePeriodF * sumXSqr;
   var sumXY = 0.0;
   var sumY = 0.0;
   var i = inTimePeriod;
   for (; i != 0;) {
     i--;
-    var tempValue1 = inReal.elementAt(today - i);
+    final tempValue1 = inReal.elementAt(today - i);
     sumY += tempValue1;
     sumXY += i * tempValue1;
   }
   for (; today < inReal.length;) {
     if (today > startIdx - 1) {
-      var tempValue2 = inReal.elementAt(today - inTimePeriod);
+      final tempValue2 = inReal.elementAt(today - inTimePeriod);
       sumXY += sumY - inTimePeriodF * tempValue2;
       sumY += inReal.elementAt(today) - tempValue2;
     }
 
-    var m = (inTimePeriodF * sumXY - sumX * sumY) / divisor;
-    var b = (sumY - m * sumX) / inTimePeriodF;
+    final m = (inTimePeriodF * sumXY - sumX * sumY) / divisor;
+    final b = (sumY - m * sumX) / inTimePeriodF;
     outReal[outIdx] = b + m * (inTimePeriodF - 1);
     outIdx++;
     today++;
@@ -5146,33 +5146,33 @@ List LinearReg(List inReal, int inTimePeriod) {
 }
 
 List LinearRegAngle(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var inTimePeriodF = inTimePeriod;
-  var lookbackTotal = inTimePeriod;
-  var startIdx = lookbackTotal;
+  final outReal = List(inReal.length);
+  final inTimePeriodF = inTimePeriod;
+  final lookbackTotal = inTimePeriod;
+  final startIdx = lookbackTotal;
   var outIdx = startIdx - 1;
   var today = startIdx - 1;
-  var sumX = inTimePeriodF * (inTimePeriodF - 1) * 0.5;
-  var sumXSqr =
+  final sumX = inTimePeriodF * (inTimePeriodF - 1) * 0.5;
+  final sumXSqr =
       inTimePeriodF * (inTimePeriodF - 1) * (2 * inTimePeriodF - 1) / 6;
-  var divisor = sumX * sumX - inTimePeriodF * sumXSqr;
+  final divisor = sumX * sumX - inTimePeriodF * sumXSqr;
   var sumXY = 0.0;
   var sumY = 0.0;
   var i = inTimePeriod;
   for (; i != 0;) {
     i--;
-    var tempValue1 = inReal.elementAt(today - i);
+    final tempValue1 = inReal.elementAt(today - i);
     sumY += tempValue1;
     sumXY += i * tempValue1;
   }
   for (; today < inReal.length;) {
     if (today > startIdx - 1) {
-      var tempValue2 = inReal.elementAt(today - inTimePeriod);
+      final tempValue2 = inReal.elementAt(today - inTimePeriod);
       sumXY += sumY - inTimePeriodF * tempValue2;
       sumY += inReal.elementAt(today) - tempValue2;
     }
 
-    var m = (inTimePeriodF * sumXY - sumX * sumY) / divisor;
+    final m = (inTimePeriodF * sumXY - sumX * sumY) / divisor;
     outReal[outIdx] = math.atan(m) * (180.0 / math.pi);
     outIdx++;
     today++;
@@ -5181,33 +5181,33 @@ List LinearRegAngle(List inReal, int inTimePeriod) {
 }
 
 List LinearRegIntercept(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var inTimePeriodF = inTimePeriod;
-  var lookbackTotal = inTimePeriod;
-  var startIdx = lookbackTotal;
+  final outReal = List(inReal.length);
+  final inTimePeriodF = inTimePeriod;
+  final lookbackTotal = inTimePeriod;
+  final startIdx = lookbackTotal;
   var outIdx = startIdx - 1;
   var today = startIdx - 1;
-  var sumX = inTimePeriodF * (inTimePeriodF - 1) * 0.5;
-  var sumXSqr =
+  final sumX = inTimePeriodF * (inTimePeriodF - 1) * 0.5;
+  final sumXSqr =
       inTimePeriodF * (inTimePeriodF - 1) * (2 * inTimePeriodF - 1) / 6;
-  var divisor = sumX * sumX - inTimePeriodF * sumXSqr;
+  final divisor = sumX * sumX - inTimePeriodF * sumXSqr;
   var sumXY = 0.0;
   var sumY = 0.0;
   var i = inTimePeriod;
   for (; i != 0;) {
     i--;
-    var tempValue1 = inReal.elementAt(today - i);
+    final tempValue1 = inReal.elementAt(today - i);
     sumY += tempValue1;
     sumXY += i * tempValue1;
   }
   for (; today < inReal.length;) {
     if (today > startIdx - 1) {
-      var tempValue2 = inReal.elementAt(today - inTimePeriod);
+      final tempValue2 = inReal.elementAt(today - inTimePeriod);
       sumXY += sumY - inTimePeriodF * tempValue2;
       sumY += inReal.elementAt(today) - tempValue2;
     }
 
-    var m = (inTimePeriodF * sumXY - sumX * sumY) / divisor;
+    final m = (inTimePeriodF * sumXY - sumX * sumY) / divisor;
     outReal[outIdx] = (sumY - m * sumX) / inTimePeriodF;
     outIdx++;
     today++;
@@ -5216,28 +5216,28 @@ List LinearRegIntercept(List inReal, int inTimePeriod) {
 }
 
 List LinearRegSlope(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var inTimePeriodF = inTimePeriod;
-  var lookbackTotal = inTimePeriod;
-  var startIdx = lookbackTotal;
+  final outReal = List(inReal.length);
+  final inTimePeriodF = inTimePeriod;
+  final lookbackTotal = inTimePeriod;
+  final startIdx = lookbackTotal;
   var outIdx = startIdx - 1;
   var today = startIdx - 1;
-  var sumX = inTimePeriodF * (inTimePeriodF - 1) * 0.5;
-  var sumXSqr =
+  final sumX = inTimePeriodF * (inTimePeriodF - 1) * 0.5;
+  final sumXSqr =
       inTimePeriodF * (inTimePeriodF - 1) * (2 * inTimePeriodF - 1) / 6;
-  var divisor = sumX * sumX - inTimePeriodF * sumXSqr;
+  final divisor = sumX * sumX - inTimePeriodF * sumXSqr;
   var sumXY = 0.0;
   var sumY = 0.0;
   var i = inTimePeriod;
   for (; i != 0;) {
     i--;
-    var tempValue1 = inReal.elementAt(today - i);
+    final tempValue1 = inReal.elementAt(today - i);
     sumY += tempValue1;
     sumXY += i * tempValue1;
   }
   for (; today < inReal.length;) {
     if (today > startIdx - 1) {
-      var tempValue2 = inReal.elementAt(today - inTimePeriod);
+      final tempValue2 = inReal.elementAt(today - inTimePeriod);
       sumXY += sumY - inTimePeriodF * tempValue2;
       sumY += inReal.elementAt(today) - tempValue2;
     }
@@ -5250,10 +5250,10 @@ List LinearRegSlope(List inReal, int inTimePeriod) {
 }
 
 List StdDev(List inReal, int inTimePeriod, double inNbDev) {
-  var outReal = Var(inReal, inTimePeriod);
+  final outReal = Var(inReal, inTimePeriod);
   if (inNbDev != 1.0) {
     for (var i = 0; i < inReal.length; i++) {
-      var tempReal = outReal.elementAt(i);
+      final tempReal = outReal.elementAt(i);
       if (!(tempReal < 0.00000000000001)) {
         outReal[i] = math.sqrt(tempReal) * inNbDev;
       } else {
@@ -5262,7 +5262,7 @@ List StdDev(List inReal, int inTimePeriod, double inNbDev) {
     }
   } else {
     for (var i = 0; i < inReal.length; i++) {
-      var tempReal = outReal.elementAt(i);
+      final tempReal = outReal.elementAt(i);
       if (!(tempReal < 0.00000000000001)) {
         outReal[i] = math.sqrt(tempReal);
       } else {
@@ -5274,34 +5274,34 @@ List StdDev(List inReal, int inTimePeriod, double inNbDev) {
 }
 
 List Tsf(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var inTimePeriodF = inTimePeriod;
-  var lookbackTotal = inTimePeriod;
-  var startIdx = lookbackTotal;
+  final outReal = List(inReal.length);
+  final inTimePeriodF = inTimePeriod;
+  final lookbackTotal = inTimePeriod;
+  final startIdx = lookbackTotal;
   var outIdx = startIdx - 1;
   var today = startIdx - 1;
-  var sumX = inTimePeriodF * (inTimePeriodF - 1.0) * 0.5;
-  var sumXSqr =
+  final sumX = inTimePeriodF * (inTimePeriodF - 1.0) * 0.5;
+  final sumXSqr =
       inTimePeriodF * (inTimePeriodF - 1) * (2 * inTimePeriodF - 1) / 6;
-  var divisor = sumX * sumX - inTimePeriodF * sumXSqr;
+  final divisor = sumX * sumX - inTimePeriodF * sumXSqr;
   var sumXY = 0.0;
   var sumY = 0.0;
   var i = inTimePeriod;
   for (; i != 0;) {
     i--;
-    var tempValue1 = inReal.elementAt(today - i);
+    final tempValue1 = inReal.elementAt(today - i);
     sumY += tempValue1;
     sumXY += i * tempValue1;
   }
   for (; today < inReal.length;) {
     if (today > startIdx - 1) {
-      var tempValue2 = inReal.elementAt(today - inTimePeriod);
+      final tempValue2 = inReal.elementAt(today - inTimePeriod);
       sumXY += sumY - inTimePeriodF * tempValue2;
       sumY += inReal.elementAt(today) - tempValue2;
     }
 
-    var m = (inTimePeriodF * sumXY - sumX * sumY) / divisor;
-    var b = (sumY - m * sumX) / inTimePeriodF;
+    final m = (inTimePeriodF * sumXY - sumX * sumY) / divisor;
+    final b = (sumY - m * sumX) / inTimePeriodF;
     outReal[outIdx] = b + m * inTimePeriodF;
     today++;
     outIdx++;
@@ -5310,9 +5310,9 @@ List Tsf(List inReal, int inTimePeriod) {
 }
 
 List Var(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var nbInitialElementNeeded = inTimePeriod - 1;
-  var startIdx = nbInitialElementNeeded;
+  final outReal = List(inReal.length);
+  final nbInitialElementNeeded = inTimePeriod - 1;
+  final startIdx = nbInitialElementNeeded;
   var periodTotal1 = 0.0;
   var periodTotal2 = 0.0;
   var trailingIdx = startIdx - nbInitialElementNeeded;
@@ -5333,8 +5333,8 @@ List Var(List inReal, int inTimePeriod) {
     periodTotal1 += tempReal;
     tempReal *= tempReal;
     periodTotal2 += tempReal;
-    var meanValue1 = periodTotal1 / inTimePeriod;
-    var meanValue2 = periodTotal2 / inTimePeriod;
+    final meanValue1 = periodTotal1 / inTimePeriod;
+    final meanValue2 = periodTotal2 / inTimePeriod;
     tempReal = inReal.elementAt(trailingIdx);
     periodTotal1 -= tempReal;
     tempReal *= tempReal;
@@ -5349,7 +5349,7 @@ List Var(List inReal, int inTimePeriod) {
 }
 
 List Acos(List inReal) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   for (var i = 0; i < inReal.length; i++) {
     outReal[i] = math.acos(inReal.elementAt(i));
   }
@@ -5357,7 +5357,7 @@ List Acos(List inReal) {
 }
 
 List Asin(List inReal) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   for (var i = 0; i < inReal.length; i++) {
     outReal[i] = math.asin(inReal.elementAt(i));
   }
@@ -5365,7 +5365,7 @@ List Asin(List inReal) {
 }
 
 List Atan(List inReal) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   for (var i = 0; i < inReal.length; i++) {
     outReal[i] = math.atan(inReal.elementAt(i));
   }
@@ -5373,7 +5373,7 @@ List Atan(List inReal) {
 }
 
 List Ceil(List inReal) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   for (var i = 0; i < inReal.length; i++) {
     outReal[i] = inReal.elementAt(i).ceil();
   }
@@ -5381,7 +5381,7 @@ List Ceil(List inReal) {
 }
 
 List Cos(List inReal) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   for (var i = 0; i < inReal.length; i++) {
     outReal[i] = math.cos(inReal.elementAt(i));
   }
@@ -5389,7 +5389,7 @@ List Cos(List inReal) {
 }
 
 // List Cosh(List inReal) {
-//   var outReal = new List(inReal.length);
+//   var outReal = List(inReal.length);
 //   for (var i = 0; i < inReal.length; i++) {
 //     outReal[i] = math.Cosh(inReal.elementAt(i));
 //   }
@@ -5397,7 +5397,7 @@ List Cos(List inReal) {
 // }
 
 List Exp(List inReal) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   for (var i = 0; i < inReal.length; i++) {
     outReal[i] = math.exp(inReal.elementAt(i));
   }
@@ -5405,7 +5405,7 @@ List Exp(List inReal) {
 }
 
 List Floor(List inReal) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   for (var i = 0; i < inReal.length; i++) {
     outReal[i] = inReal.elementAt(i).floor();
   }
@@ -5413,7 +5413,7 @@ List Floor(List inReal) {
 }
 
 List Ln(List inReal) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   for (var i = 0; i < inReal.length; i++) {
     outReal[i] = math.log(inReal.elementAt(i));
   }
@@ -5421,7 +5421,7 @@ List Ln(List inReal) {
 }
 
 List Log10(List inReal) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   for (var i = 0; i < inReal.length; i++) {
     outReal[i] = math.log(inReal.elementAt(i));
   }
@@ -5429,7 +5429,7 @@ List Log10(List inReal) {
 }
 
 List Sin(List inReal) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   for (var i = 0; i < inReal.length; i++) {
     outReal[i] = math.sin(inReal.elementAt(i));
   }
@@ -5437,7 +5437,7 @@ List Sin(List inReal) {
 }
 
 // List Sinh(List inReal) {
-//   var outReal = new List(inReal.length);
+//   var outReal = List(inReal.length);
 //   for (var i = 0; i < inReal.length; i++) {
 //     outReal[i] = math.sinh(inReal.elementAt(i));
 //   }
@@ -5445,7 +5445,7 @@ List Sin(List inReal) {
 // }
 
 List Sqrt(List inReal) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   for (var i = 0; i < inReal.length; i++) {
     outReal[i] = math.sqrt(inReal.elementAt(i));
   }
@@ -5453,7 +5453,7 @@ List Sqrt(List inReal) {
 }
 
 List Tan(List inReal) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   for (var i = 0; i < inReal.length; i++) {
     outReal[i] = math.tan(inReal.elementAt(i));
   }
@@ -5461,7 +5461,7 @@ List Tan(List inReal) {
 }
 
 // List Tanh(List inReal) {
-//   var outReal = new List(inReal.length);
+//   var outReal = List(inReal.length);
 //   for (var i = 0; i < inReal.length; i++) {
 //     outReal[i] = math.Tanh(inReal.elementAt(i));
 //   }
@@ -5469,7 +5469,7 @@ List Tan(List inReal) {
 // }
 
 List Add(List inReal0, List inReal1) {
-  var outReal = new List(inReal0.length);
+  final outReal = List(inReal0.length);
   for (var i = 0; i < inReal0.length; i++) {
     outReal[i] = inReal0.elementAt(i) + inReal1.elementAt(i);
   }
@@ -5477,7 +5477,7 @@ List Add(List inReal0, List inReal1) {
 }
 
 List Div(List inReal0, List inReal1) {
-  var outReal = new List(inReal0.length);
+  final outReal = List(inReal0.length);
   for (var i = 0; i < inReal0.length; i++) {
     outReal[i] = inReal0.elementAt(i) / inReal1.elementAt(i);
   }
@@ -5485,13 +5485,13 @@ List Div(List inReal0, List inReal1) {
 }
 
 List Max(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   if (inTimePeriod < 2) {
     return outReal;
   }
 
-  var nbInitialElementNeeded = inTimePeriod - 1;
-  var startIdx = nbInitialElementNeeded;
+  final nbInitialElementNeeded = inTimePeriod - 1;
+  final startIdx = nbInitialElementNeeded;
   var outIdx = startIdx;
   var today = startIdx;
   var trailingIdx = startIdx - nbInitialElementNeeded;
@@ -5526,26 +5526,26 @@ List Max(List inReal, int inTimePeriod) {
 }
 
 List MaxIndex(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   if (inTimePeriod < 2) {
     return outReal;
   }
 
-  var nbInitialElementNeeded = inTimePeriod - 1;
-  var startIdx = nbInitialElementNeeded;
+  final nbInitialElementNeeded = inTimePeriod - 1;
+  final startIdx = nbInitialElementNeeded;
   var outIdx = startIdx;
   var today = startIdx;
   var trailingIdx = startIdx - nbInitialElementNeeded;
   var highestIdx = -1;
   var highest = 0.0;
   for (; today < inReal.length;) {
-    var tmp = inReal.elementAt(today);
+    final tmp = inReal.elementAt(today);
     if (highestIdx < trailingIdx) {
       highestIdx = trailingIdx;
       highest = inReal.elementAt(highestIdx);
       var i = highestIdx + 1;
       for (; i <= today;) {
-        var tmp = inReal.elementAt(i);
+        final tmp = inReal.elementAt(i);
         if (tmp > highest) {
           highestIdx = i;
           highest = tmp;
@@ -5567,13 +5567,13 @@ List MaxIndex(List inReal, int inTimePeriod) {
 }
 
 List Min(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   if (inTimePeriod < 2) {
     return outReal;
   }
 
-  var nbInitialElementNeeded = inTimePeriod - 1;
-  var startIdx = nbInitialElementNeeded;
+  final nbInitialElementNeeded = inTimePeriod - 1;
+  final startIdx = nbInitialElementNeeded;
   var outIdx = startIdx;
   var today = startIdx;
   var trailingIdx = startIdx - nbInitialElementNeeded;
@@ -5608,13 +5608,13 @@ List Min(List inReal, int inTimePeriod) {
 }
 
 List MinIndex(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
+  final outReal = List(inReal.length);
   if (inTimePeriod < 2) {
     return outReal;
   }
 
-  var nbInitialElementNeeded = inTimePeriod - 1;
-  var startIdx = nbInitialElementNeeded;
+  final nbInitialElementNeeded = inTimePeriod - 1;
+  final startIdx = nbInitialElementNeeded;
   var outIdx = startIdx;
   var today = startIdx;
   var trailingIdx = startIdx - nbInitialElementNeeded;
@@ -5649,10 +5649,10 @@ List MinIndex(List inReal, int inTimePeriod) {
 }
 
 List MinMax(List inReal, int inTimePeriod) {
-  var outMin = new List(inReal.length);
-  var outMax = new List(inReal.length);
-  var nbInitialElementNeeded = (inTimePeriod - 1);
-  var startIdx = nbInitialElementNeeded;
+  final outMin = List(inReal.length);
+  final outMax = List(inReal.length);
+  final nbInitialElementNeeded = inTimePeriod - 1;
+  final startIdx = nbInitialElementNeeded;
   var outIdx = startIdx;
   var today = startIdx;
   var trailingIdx = startIdx - nbInitialElementNeeded;
@@ -5711,10 +5711,10 @@ List MinMax(List inReal, int inTimePeriod) {
 }
 
 List MinMaxIndex(List inReal, int inTimePeriod) {
-  var outMinIdx = new List(inReal.length);
-  var outMaxIdx = new List(inReal.length);
-  var nbInitialElementNeeded = (inTimePeriod - 1);
-  var startIdx = nbInitialElementNeeded;
+  final outMinIdx = List(inReal.length);
+  final outMaxIdx = List(inReal.length);
+  final nbInitialElementNeeded = (inTimePeriod - 1);
+  final startIdx = nbInitialElementNeeded;
   var outIdx = startIdx;
   var today = startIdx;
   var trailingIdx = startIdx - nbInitialElementNeeded;
@@ -5773,7 +5773,7 @@ List MinMaxIndex(List inReal, int inTimePeriod) {
 }
 
 List Mult(List inReal0, List inReal1) {
-  var outReal = new List(inReal0.length);
+  final outReal = List(inReal0.length);
   for (var i = 0; i < inReal0.length; i++) {
     outReal[i] = inReal0.elementAt(i) * inReal1.elementAt(i);
   }
@@ -5781,7 +5781,7 @@ List Mult(List inReal0, List inReal1) {
 }
 
 List Sub(List inReal0, List inReal1) {
-  var outReal = new List(inReal0.length);
+  final outReal = List(inReal0.length);
   for (var i = 0; i < inReal0.length; i++) {
     outReal[i] = inReal0.elementAt(i) - inReal1.elementAt(i);
   }
@@ -5789,9 +5789,9 @@ List Sub(List inReal0, List inReal1) {
 }
 
 List Sum(List inReal, int inTimePeriod) {
-  var outReal = new List(inReal.length);
-  var lookbackTotal = inTimePeriod - 1;
-  var startIdx = lookbackTotal;
+  final outReal = List(inReal.length);
+  final lookbackTotal = inTimePeriod - 1;
+  final startIdx = lookbackTotal;
   var periodTotal = 0.0;
   var trailingIdx = startIdx - lookbackTotal;
   var i = trailingIdx;
@@ -5805,7 +5805,7 @@ List Sum(List inReal, int inTimePeriod) {
   var outIdx = startIdx;
   for (; i < inReal.length;) {
     periodTotal += inReal.elementAt(i);
-    var tempReal = periodTotal;
+    final tempReal = periodTotal;
     periodTotal -= inReal.elementAt(trailingIdx);
     outReal[outIdx] = tempReal;
     i++;
@@ -5817,13 +5817,13 @@ List Sum(List inReal, int inTimePeriod) {
 
 List HeikinashiCandles(List<double> highs, List<double> opens,
     List<double> closes, List<double> lows) {
-  var N = highs.length;
-  var heikinHighs = new List(N);
-  var heikinOpens = new List(N);
-  var heikinCloses = new List(N);
-  var heikinLows = new List(N);
+  final N = highs.length;
+  final heikinHighs = List(N);
+  final heikinOpens = List(N);
+  final heikinCloses = List(N);
+  final heikinLows = List(N);
   for (var currentCandle = 1; currentCandle < N; currentCandle++) {
-    var previousCandle = currentCandle - 1;
+    final previousCandle = currentCandle - 1;
     heikinHighs[currentCandle] = math.max(
         highs.elementAt(currentCandle),
         math.max(
@@ -5845,8 +5845,8 @@ List HeikinashiCandles(List<double> highs, List<double> opens,
 }
 
 List Hlc3(List highs, List lows, List closes) {
-  var N = highs.length;
-  var result = new List(N);
+  final N = highs.length;
+  final result = List(N);
 
   for (var i in result) {
     result[i] =
@@ -5860,7 +5860,7 @@ bool Crossover(List series1, List series2) {
     return false;
   }
 
-  var N = series1.length;
+  final N = series1.length;
   return series1.elementAt(N - 2) <= series2.elementAt(N - 2) &&
       series1.elementAt(N - 1) > series2.elementAt(N - 1);
 }
@@ -5870,14 +5870,14 @@ bool Crossunder(List series1, List series2) {
     return false;
   }
 
-  var N = series1.length;
+  final N = series1.length;
   return series1.elementAt(N - 1) <= series2.elementAt(N - 1) &&
       series1.elementAt(N - 2) > series2.elementAt(N - 2);
 }
 
 List GroupCandles(
     List highs, List opens, List closes, List lows, int groupingFactor) {
-  var N = highs.length;
+  final N = highs.length;
   if (groupingFactor == 0) {
     return [null, null, null, null, null];
   } else if (groupingFactor == 1) {
@@ -5888,19 +5888,19 @@ List GroupCandles(
     return [null, null, null, null, null];
   }
 
-  var groupedN = N / groupingFactor;
-  var groupedHighs = new List(groupedN.round());
-  var groupedOpens = new List(groupedN.round());
-  var groupedCloses = new List(groupedN.round());
-  var groupedLows = new List(groupedN.round());
-  var lastOfCurrentGroup = groupingFactor - 1;
+  final groupedN = N / groupingFactor;
+  final groupedHighs = List(groupedN.round());
+  final groupedOpens = List(groupedN.round());
+  final groupedCloses = List(groupedN.round());
+  final groupedLows = List(groupedN.round());
+  final lastOfCurrentGroup = groupingFactor - 1;
   var k = 0;
   for (var i = 0; i < N; i += groupingFactor) {
     groupedOpens[k] = opens.elementAt(i);
     groupedCloses[k] = closes.elementAt(i + lastOfCurrentGroup);
     groupedHighs[k] = highs.elementAt(i);
     groupedLows[k] = lows.elementAt(i);
-    var endOfCurrentGroup = i + lastOfCurrentGroup;
+    final endOfCurrentGroup = i + lastOfCurrentGroup;
     for (var j = i + 1; j <= endOfCurrentGroup; j++) {
       if (lows.elementAt(j) < groupedLows.elementAt(k)) {
         groupedLows[k] = lows.elementAt(j);
