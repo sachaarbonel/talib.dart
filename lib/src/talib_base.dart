@@ -3,13 +3,13 @@ library talib;
 import 'dart:core';
 import 'dart:math' as math;
 
-T exceptionAware<T>(T Function() f) {
-  try {
-    return f();
-  } catch (_) {
-    return null;
-  }
-}
+// T exceptionAware<T>(T Function() f) {
+//   try {
+//     return f();
+//   } catch (_) {
+//     return null;
+//   }
+// }
 
 enum MaType {
   SMA,
@@ -1311,7 +1311,7 @@ List Trima(List inReal, int inTimePeriod) {
   final lookbackTotal = inTimePeriod - 1;
   final startIdx = lookbackTotal;
   var outIdx = inTimePeriod - 1;
-  var factor = null; //TODO: handle this
+  var factor = 0.0; //TODO: handle this
   if (inTimePeriod % 2 == 1) {
     final i = inTimePeriod >> 1;
     var factor = (i + 1.0) * (i + 1.0);
@@ -1358,7 +1358,7 @@ List Trima(List inReal, int inTimePeriod) {
     }
   } else {
     final i = inTimePeriod >> 1;
-    factor = i * (i + 1);
+    factor = (i * (i + 1)) as double;
     factor = 1.0 / factor;
     var trailingIdx = startIdx - lookbackTotal;
     var middleIdx = trailingIdx + i - 1;
@@ -2005,16 +2005,15 @@ List Macd(List inReal, int inFastPeriod, int inSlowPeriod, int inSignalPeriod) {
   for (var i = 0; i < fastEMABuffer.length; i++) {
     final fastEMABufferElt = fastEMABuffer?.elementAt(i) ?? 0.0;
     final slowEMABufferElt = slowEMABuffer?.elementAt(i) ?? 0.0;
-    //fastEMABuffer[i] = exceptionAware<dynamic>(() => fastEMABuffer.elementAt(i) - slowEMABuffer.elementAt(i));
     fastEMABuffer[i] = fastEMABufferElt - slowEMABufferElt;
   }
-  final outMACD = List(inReal.length);
+  final outMACD = List.filled(inReal.length, 0.0);
   for (var i = lookbackTotal - 1; i < fastEMABuffer.length; i++) {
     outMACD[i] = fastEMABuffer.elementAt(i);
   }
   final outMACDSignal =
       ema(outMACD, inSignalPeriod, (2.0 / (inSignalPeriod + 1).toDouble()));
-  final outMACDHist = List(inReal.length);
+  final outMACDHist = List.filled(inReal.length, 0.0);
   for (var i = lookbackTotal; i < outMACDHist.length; i++) {
     final outMacdElt = outMACD?.elementAt(i) ?? 0.0;
     final outMACDSignalElt = outMACDSignal?.elementAt(i) ?? 0.0;
@@ -2038,7 +2037,7 @@ List MacdExt(
     lookbackLargest = inFastPeriod;
   }
   final lookbackTotal = (inSignalPeriod - 1) + (lookbackLargest - 1);
-  final outMACD = List(inReal.length);
+  final outMACD = List.filled(inReal.length, 0.0);
   final outMACDSignal = List(inReal.length);
   final outMACDHist = List(inReal.length);
   final slowMABuffer = Ma(inReal, inSlowPeriod, inSlowMAType);
